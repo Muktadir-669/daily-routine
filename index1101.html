@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>365 Days Discipline Challenge</title>
+    <style>
+      :root {
+        --bg: #07141f;
+        --bg-soft: #0d1f2b;
+        --card: rgba(14, 25, 35, 0.9);
+        --card-strong: #122b3b;
+        --line: rgba(150, 185, 210, 0.2);
+        --primary: #7ee0ff;
+        --secondary: #9dffb5;
+        --warning: #ffd166;
+        --danger: #ff6b6b;
+        --text: #edf6ff;
+        --muted: #9bb4c6;
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(circle at top, rgba(126, 224, 255, 0.14), transparent 25%),
+          linear-gradient(135deg, var(--bg), #0b1720 45%, #08131b);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page-shell {
+        width: min(1200px, 92%);
+        margin: 0 auto;
+        padding: 24px 0 60px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 0 30px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--primary), #4db7d8);
+        color: #061920;
+        font-weight: 800;
+      }
+
+      .nav {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .nav a {
+        color: var(--muted);
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: 0.25s ease;
+      }
+
+      .nav a:hover {
+        color: var(--text);
+        border-color: var(--line);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 24px;
+        background: linear-gradient(135deg, rgba(14, 31, 40, 0.95), rgba(17, 39, 52, 0.8));
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        padding: 32px;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        width: fit-content;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(126, 224, 255, 0.12);
+        color: var(--primary);
+        border: 1px solid rgba(126, 224, 255, 0.2);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2.2rem, 4vw, 4rem);
+        line-height: 1.06;
+        letter-spacing: -0.05em;
+      }
+
+      .hero-copy p {
+        margin: 0;
+        font-size: 1.04rem;
+        line-height: 1.7;
+        color: var(--muted);
+        max-width: 620px;
+      }
+
+      .cta-row {
+        display: flex;
+        gap: 14px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 14px;
+        padding: 14px 22px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #74d5c4);
+        color: #061923;
+      }
+
+      .btn-secondary {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--line);
+        color: var(--text);
+      }
+
+      .hero-panel {
+        display: grid;
+        grid-template-rows: auto auto;
+        gap: 18px;
+      }
+
+      .goal-box {
+        background: rgba(7, 18, 23, 0.9);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 20px;
+      }
+
+      .goal-title {
+        color: var(--muted);
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .goal-value {
+        margin-top: 12px;
+        font-size: clamp(2rem, 3vw, 3rem);
+        font-weight: 800;
+      }
+
+      .mini-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .mini-card {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+      .mini-label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+      }
+
+      .mini-card strong {
+        font-size: 1.4rem;
+      }
+
+      main {
+        display: grid;
+        gap: 28px;
+        margin-top: 30px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .stat-card {
+        background: rgba(9, 22, 31, 0.85);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px 18px;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .stat-card span {
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .stat-card strong {
+        margin-top: 18px;
+        font-size: clamp(1.3rem, 2vw, 2rem);
+      }
+
+      .section-box {
+        background: rgba(10, 20, 28, 0.88);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 26px;
+        box-shadow: var(--shadow);
+      }
+
+      .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: clamp(1.4rem, 2vw, 2rem);
+      }
+
+      .pill {
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--warning);
+        background: rgba(255, 209, 102, 0.08);
+        border: 1px solid rgba(255, 209, 102, 0.2);
+      }
+
+      .discipline-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .discipline-card {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px 16px;
+      }
+
+      .discipline-card .letter {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, rgba(126,224,255,0.25), rgba(157,255,181,0.12));
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+      }
+
+      .discipline-card h3 {
+        margin: 0 0 8px;
+        font-size: 1.18rem;
+      }
+
+      .discipline-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .rules-layout {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 20px;
+      }
+
+      .check-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 12px 14px;
+      }
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--primary);
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      .check-item label {
+        cursor: pointer;
+        color: var(--text);
+      }
+
+      .focus-panel {
+        background: linear-gradient(160deg, rgba(126,224,255,0.07), rgba(157,255,181,0.05));
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+      }
+
+      .focus-panel h3 {
+        margin-top: 0;
+      }
+
+      .focus-panel ul {
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .field input,
+      .field textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: rgba(5, 14, 20, 0.85);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font: inherit;
+      }
+
+      .field textarea {
+        min-height: 110px;
+        resize: vertical;
+      }
+
+      .form-checks {
+        padding-top: 12px;
+      }
+
+      .submit-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .progress-layout {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 20px;
+      }
+
+      .progress-card {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 22px;
+      }
+
+      .ring-wrap {
+        position: relative;
+        width: 170px;
+        height: 170px;
+        margin: 12px auto 4px;
+      }
+
+      .ring-wrap svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+
+      .ring-bg {
+        fill: none;
+        stroke: rgba(255,255,255,0.08);
+        stroke-width: 12;
+      }
+
+      .ring-progress {
+        fill: none;
+        stroke: url(#progressGradient);
+        stroke-width: 12;
+        stroke-linecap: round;
+        stroke-dasharray: 440;
+        stroke-dashoffset: 440;
+        transition: stroke-dashoffset 0.45s ease;
+      }
+
+      .ring-center {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+
+      .ring-center strong {
+        font-size: 2rem;
+      }
+
+      .history-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      .history-item {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 16px;
+        background: rgba(255,255,255,0.015);
+      }
+
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .history-date {
+        font-weight: 700;
+      }
+
+      .history-score {
+        color: var(--secondary);
+        font-weight: 700;
+      }
+
+      .history-meta {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.7;
+      }
+
+      .empty {
+        color: var(--muted);
+        background: rgba(255,255,255,0.02);
+        border: 1px dashed var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+
+      @media (max-width: 900px) {
+        .hero,
+        .rules-layout,
+        .progress-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid,
+        .discipline-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .topbar,
+        .section-heading {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .stats-grid,
+        .discipline-grid,
+        .form-grid,
+        .check-list {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          padding: 22px 18px;
+        }
+
+        .page-shell {
+          width: min(94%, 1200px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">D</div>
+          <span>Discipline</span>
+        </div>
+        <nav class="nav">
+          <a href="#discipline">DISCIPLINE</a>
+          <a href="#routine">Routine</a>
+          <a href="#submit">Submit</a>
+          <a href="#history">History</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">365 Days Challenge</div>
+          <h1>Build a life of focus, strength, and self-control.</h1>
+          <p>
+            Discipline is not a mood. It is a system. Follow the routine daily, stay consistent,
+            and turn every good habit into a permanent part of your life.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#submit">Submit Today</a>
+            <a class="btn btn-secondary" href="#routine">View Routine</a>
+          </div>
+        </div>
+
+        <div class="hero-panel">
+          <div class="goal-box">
+            <div class="goal-title">Challenge Goal</div>
+            <div class="goal-value">365 Days</div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini-card">
+              <span class="mini-label">Daily Rules</span>
+              <strong>15</strong>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Water</span>
+              <strong>3L+</strong>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Walk</span>
+              <strong>1 Hr</strong>
+            </div>
+            <div class="mini-card">
+              <span class="mini-label">Workout</span>
+              <strong>30 Min</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main>
+        <section class="stats-grid">
+          <div class="stat-card">
+            <span>Minimum Water</span>
+            <strong>3 Liters</strong>
+          </div>
+          <div class="stat-card">
+            <span>Daily Study</span>
+            <strong>2 Hours</strong>
+          </div>
+          <div class="stat-card">
+            <span>Daily Sleep</span>
+            <strong>6 Hours</strong>
+          </div>
+          <div class="stat-card">
+            <span>Screen Time</span>
+            <strong>4 Hours Max</strong>
+          </div>
+        </section>
+
+        <section class="section-box" id="discipline">
+          <div class="section-heading">
+            <h2>DISCIPLINE</h2>
+            <span class="pill">Life of control</span>
+          </div>
+
+          <div class="discipline-grid">
+            <div class="discipline-card">
+              <div class="letter">D</div>
+              <h3>Dedication</h3>
+              <p>উৎসর্গ বা নিষ্ঠা — stay committed even when motivation fades.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">I</div>
+              <h3>Integrity</h3>
+              <p>সততা বা অখণ্ডতা — be honest with yourself and others.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">S</div>
+              <h3>Self-control</h3>
+              <p>আত্মসংযম — win over impulse and distractions.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">C</div>
+              <h3>Consistency</h3>
+              <p>ধারাবাহিকতা — do the right thing repeatedly.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">I</div>
+              <h3>Improvement</h3>
+              <p>উন্নতি বা অগ্রগতি — become stronger every day.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">P</div>
+              <h3>Patience</h3>
+              <p>ধৈর্য — results come to disciplined people over time.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">L</div>
+              <h3>Learning</h3>
+              <p>শিক্ষা গ্রহণ — never stop improving your mind.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">I</div>
+              <h3>Inspiration</h3>
+              <p>অনুপ্রেরণা — let your habits lift your purpose.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">N</div>
+              <h3>Neat habits</h3>
+              <p>পরিপাটি বা ভালো অভ্যাস — maintain structure, hygiene, and focus.</p>
+            </div>
+            <div class="discipline-card">
+              <div class="letter">E</div>
+              <h3>Excellence</h3>
+              <p>উৎকর্ষতা বা শ্রেষ্ঠত্ব — aim higher in every action.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-box" id="routine">
+          <div class="section-heading">
+            <h2>Strict Daily Routine</h2>
+            <span class="pill">Mandatory</span>
+          </div>
+
+          <div class="rules-layout">
+            <div class="check-list" id="dailyChecklist"></div>
+
+            <aside class="focus-panel">
+              <h3>Discipline must be discipline.</h3>
+              <ul>
+                <li>No porn</li>
+                <li>No masturbation</li>
+                <li>No sugar</li>
+                <li>Daily minimum 3 liters of water</li>
+                <li>At least 1 hour walk daily</li>
+                <li>Minimum 30 minutes workout daily</li>
+                <li>Diet maintain</li>
+                <li>Don't tell a lie</li>
+                <li>Prayer 5 times</li>
+                <li>Try to pray Tahajjud</li>
+                <li>Minimum 2 hours study daily</li>
+                <li>Sleep at least 6 hours</li>
+                <li>Cold shower</li>
+                <li>Screen time not more than 4 hours</li>
+                <li>Cannot be eaten fried food</li>
+              </ul>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section-box" id="submit">
+          <div class="section-heading">
+            <h2>Submit Today's Routine</h2>
+            <span class="pill">Progress Tracker</span>
+          </div>
+
+          <form id="routineForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="routineDate">Date</label>
+                <input type="date" id="routineDate" required />
+              </div>
+              <div class="field">
+                <label for="waterInput">Water (liters)</label>
+                <input type="number" id="waterInput" min="0" max="10" step="0.5" value="3" />
+              </div>
+              <div class="field">
+                <label for="sleepInput">Sleep (hours)</label>
+                <input type="number" id="sleepInput" min="0" max="12" step="0.5" value="6" />
+              </div>
+            </div>
+
+            <div class="form-checks" id="formChecklist"></div>
+
+            <div class="field" style="margin-top: 20px;">
+              <label for="dailyNotes">Daily Reflection</label>
+              <textarea id="dailyNotes" placeholder="Write how your day went, what you improved, or what needs attention."></textarea>
+            </div>
+
+            <div class="submit-actions">
+              <button type="submit" class="btn btn-primary">Submit Routine</button>
+              <button type="button" class="btn btn-secondary" id="clearHistory">Clear History</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="section-box" id="history">
+          <div class="section-heading">
+            <h2>Progress Overview</h2>
+            <span class="pill">Daily Summary</span>
+          </div>
+
+          <div class="progress-layout">
+            <div class="progress-card">
+              <h3>Today's Completion</h3>
+              <div class="ring-wrap">
+                <svg viewBox="0 0 160 160" aria-label="Progress ring">
+                  <defs>
+                    <linearGradient id="progressGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                      <stop offset="0%" stop-color="#7ee0ff" />
+                      <stop offset="100%" stop-color="#9dffb5" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="ring-bg" cx="80" cy="80" r="70"></circle>
+                  <circle class="ring-progress" id="progressRing" cx="80" cy="80" r="70"></circle>
+                </svg>
+                <div class="ring-center">
+                  <div>
+                    <strong id="percentText">0%</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="progress-card">
+              <h3>Submission History</h3>
+              <ul class="history-list" id="historyList"></ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const rules = [
+        'No porn',
+        'No masturbation',
+        'No sugar',
+        'Daily minimum 3 lt water',
+        'At least 1 hr walk daily',
+        'Minimum 30 min workout daily',
+        'Diet maintain',
+        'Don’t tell a lie',
+        'Prayer 5 times',
+        'Try to pray Tahajjud',
+        'Minimum 2 hrs study daily',
+        'Sleep at least 6 hrs',
+        'Cold shower',
+        'Screen time not more than 4 hrs',
+        'Cannot be eaten fried food'
+      ];
+
+      const dailyChecklist = document.getElementById('dailyChecklist');
+      const formChecklist = document.getElementById('formChecklist');
+      const routineForm = document.getElementById('routineForm');
+      const historyList = document.getElementById('historyList');
+      const progressRing = document.getElementById('progressRing');
+      const percentText = document.getElementById('percentText');
+      const routineDate = document.getElementById('routineDate');
+      const waterInput = document.getElementById('waterInput');
+      const sleepInput = document.getElementById('sleepInput');
+      const clearHistoryBtn = document.getElementById('clearHistory');
+
+      const STORAGE_KEY = 'disciplineChallengeEntries';
+      const radius = 70;
+      const circumference = 2 * Math.PI * radius;
+      progressRing.style.strokeDasharray = String(circumference);
+
+      function renderChecklistTarget(container) {
+        container.innerHTML = '';
+        rules.forEach((rule, index) => {
+          const item = document.createElement('div');
+          item.className = 'check-item';
+
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.id = 'rule-' + index;
+          checkbox.name = 'rule-' + index;
+          checkbox.checked = false;
+
+          const label = document.createElement('label');
+          label.setAttribute('for', checkbox.id);
+          label.textContent = rule;
+
+          item.appendChild(checkbox);
+          item.appendChild(label);
+          container.appendChild(item);
+        });
+      }
+
+      function updateProgressFromForm() {
+        const formInputs = [...document.querySelectorAll('#formChecklist input[type="checkbox"]')];
+        const total = formInputs.length || 1;
+        const done = formInputs.filter((input) => input.checked).length;
+        const percent = Math.round((done / total) * 100);
+        const dashOffset = circumference - (percent / 100) * circumference;
+
+        progressRing.style.strokeDashoffset = String(dashOffset);
+        percentText.textContent = percent + '%';
+      }
+
+      function setDefaultDate() {
+        const today = new Date();
+        const offset = today.getTimezoneOffset();
+        const localDate = new Date(today.getTime() - offset * 60000);
+        routineDate.value = localDate.toISOString().split('T')[0];
+      }
+
+      function saveEntries(entries) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+      }
+
+      function getEntries() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (!stored) return [];
+
+        try {
+          return JSON.parse(stored);
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function renderHistory() {
+        const entries = getEntries();
+        historyList.innerHTML = '';
+
+        if (!entries.length) {
+          const emptyItem = document.createElement('li');
+          emptyItem.className = 'empty';
+          emptyItem.textContent = 'No routine submitted yet. Complete the checklist and submit your first day.';
+          historyList.appendChild(emptyItem);
+          return;
+        }
+
+        entries.slice().reverse().forEach((entry) => {
+          const item = document.createElement('li');
+          item.className = 'history-item';
+
+          const header = document.createElement('div');
+          header.className = 'history-header';
+
+          const date = document.createElement('span');
+          date.className = 'history-date';
+          date.textContent = entry.date;
+
+          const score = document.createElement('span');
+          score.className = 'history-score';
+          score.textContent = entry.percent + '%';
+
+          header.appendChild(date);
+          header.appendChild(score);
+
+          const meta = document.createElement('div');
+          meta.className = 'history-meta';
+          meta.innerHTML = `Water: ${entry.water}L · Sleep: ${entry.sleep}h · Completed: ${entry.completed}/${entry.total} rules`;
+
+          const notes = document.createElement('div');
+          notes.className = 'history-meta';
+          notes.style.marginTop = '8px';
+          notes.textContent = entry.notes ? 'Note: ' + entry.notes : 'Note: No reflection added.';
+
+          item.appendChild(header);
+          item.appendChild(meta);
+          item.appendChild(notes);
+          historyList.appendChild(item);
+        });
+      }
+
+      function collectCheckedRules() {
+        const checked = [...document.querySelectorAll('#formChecklist input[type="checkbox"]:checked')];
+        return checked.map((checkbox) => checkbox.id.replace('rule-', ''));
+      }
+
+      function handleSubmit(event) {
+        event.preventDefault();
+
+        const checkedRules = collectCheckedRules();
+        const total = rules.length;
+        const completed = checkedRules.length;
+        const percent = Math.round((completed / total) * 100);
+
+        const entry = {
+          date: routineDate.value || new Date().toISOString().split('T')[0],
+          water: Number(waterInput.value) || 0,
+          sleep: Number(sleepInput.value) || 0,
+          total,
+          completed,
+          percent,
+          notes: document.getElementById('dailyNotes').value.trim(),
+          checked: checkedRules
+        };
+
+        const entries = getEntries();
+        entries.push(entry);
+        saveEntries(entries);
+        renderHistory();
+
+        const finalPercent = Math.round((entry.completed / entry.total) * 100);
+        progressRing.style.strokeDashoffset = String(circumference - (finalPercent / 100) * circumference);
+        percentText.textContent = finalPercent + '%';
+
+        const message = document.createElement('div');
+        message.style.marginTop = '16px';
+        message.style.padding = '12px 14px';
+        message.style.borderRadius = '12px';
+        message.style.background = 'rgba(157,255,181,0.08)';
+        message.style.border = '1px solid rgba(157,255,181,0.18)';
+        message.style.color = '#dfffe8';
+        message.textContent = `Routine submitted successfully. Your score: ${finalPercent}% on ${entry.date}.`;
+
+        const form = document.getElementById('routineForm');
+        const existingMessage = form.querySelector('.success-message');
+        if (existingMessage) existingMessage.remove();
+        message.className = 'success-message';
+        form.appendChild(message);
+      }
+
+      function clearHistory() {
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistory();
+        percentText.textContent = '0%';
+        progressRing.style.strokeDashoffset = String(circumference);
+      }
+
+      renderChecklistTarget(dailyChecklist);
+      renderChecklistTarget(formChecklist);
+      setDefaultDate();
+      renderHistory();
+      updateProgressFromForm();
+
+      document.querySelectorAll('#formChecklist input[type="checkbox"]').forEach((checkbox) => {
+        checkbox.addEventListener('change', updateProgressFromForm);
+      });
+
+      routineForm.addEventListener('submit', handleSubmit);
+      clearHistoryBtn.addEventListener('click', clearHistory);
+    </script>
+  </body>
+</html>
