@@ -527,6 +527,112 @@
         padding: 16px;
       }
 
+      .discipline-analytics {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      .analytics-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      .analytics-heading h3 {
+        margin: 0;
+      }
+
+      .analytics-heading p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .graph-scroll {
+        overflow-x: auto;
+        padding-bottom: 6px;
+      }
+
+      .discipline-graph {
+        display: grid;
+        grid-template-columns: minmax(150px, 1.4fr) repeat(var(--day-count), minmax(58px, 1fr));
+        min-width: max-content;
+        gap: 7px;
+        align-items: center;
+      }
+
+      .graph-label,
+      .graph-date {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .graph-date {
+        text-align: center;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        height: 54px;
+        justify-self: center;
+      }
+
+      .graph-label {
+        padding-right: 8px;
+        white-space: nowrap;
+      }
+
+      .graph-cell {
+        height: 28px;
+        border: 1px solid rgba(143, 177, 205, 0.16);
+        border-radius: 7px;
+        background: rgba(255,255,255,0.04);
+      }
+
+      .graph-cell.done {
+        background: linear-gradient(135deg, rgba(111, 224, 255, 0.85), rgba(138, 240, 196, 0.78));
+        border-color: rgba(138, 240, 196, 0.55);
+      }
+
+      .analytics-summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .summary-block {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+        background: rgba(255,255,255,0.02);
+      }
+
+      .summary-block h4 {
+        margin: 0 0 10px;
+        font-size: 0.82rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .summary-block.improving h4 {
+        color: var(--secondary);
+      }
+
+      .summary-block.focus h4 {
+        color: var(--accent);
+      }
+
+      .summary-list {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 0.88rem;
+      }
+
       @media (max-width: 900px) {
         .hero,
         .rules-layout,
@@ -801,6 +907,29 @@
               <ul class="history-list" id="historyList"></ul>
             </div>
           </div>
+
+          <div class="discipline-analytics">
+            <div class="analytics-heading">
+              <div>
+                <h3>Day-by-day Discipline Graph</h3>
+                <p>Bright cells show the disciplines completed on each submitted day.</p>
+              </div>
+              <span class="pill" id="graphStatus">No data yet</span>
+            </div>
+            <div class="graph-scroll">
+              <div class="discipline-graph" id="disciplineGraph"></div>
+            </div>
+            <div class="analytics-summary">
+              <div class="summary-block improving">
+                <h4>Improving today</h4>
+                <ul class="summary-list" id="improvingList"></ul>
+              </div>
+              <div class="summary-block focus">
+                <h4>Needs more focus</h4>
+                <ul class="summary-list" id="focusList"></ul>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
     </div>
@@ -834,6 +963,10 @@
       const waterInput = document.getElementById('waterInput');
       const sleepInput = document.getElementById('sleepInput');
       const clearHistoryBtn = document.getElementById('clearHistory');
+      const disciplineGraph = document.getElementById('disciplineGraph');
+      const graphStatus = document.getElementById('graphStatus');
+      const improvingList = document.getElementById('improvingList');
+      const focusList = document.getElementById('focusList');
 
       const STORAGE_KEY = 'disciplineChallengeEntries';
       const radius = 70;
@@ -941,6 +1074,75 @@
         });
       }
 
+      function renderDisciplineGraph() {
+        const entries = getEntries().slice().sort((first, second) => first.date.localeCompare(second.date));
+        disciplineGraph.innerHTML = '';
+        improvingList.innerHTML = '';
+        focusList.innerHTML = '';
+
+        if (!entries.length) {
+          disciplineGraph.innerHTML = '<div class="empty" style="grid-column: 1 / -1;">Submit a routine to start your day-by-day discipline graph.</div>';
+          graphStatus.textContent = 'No data yet';
+          improvingList.innerHTML = '<li>Complete your first day.</li>';
+          focusList.innerHTML = '<li>Your focus areas will appear here.</li>';
+          return;
+        }
+
+        disciplineGraph.style.setProperty('--day-count', entries.length);
+        disciplineGraph.appendChild(document.createElement('div'));
+        entries.forEach((entry) => {
+          const date = document.createElement('span');
+          date.className = 'graph-date';
+          date.textContent = entry.date;
+          disciplineGraph.appendChild(date);
+        });
+
+        rules.forEach((rule, index) => {
+          const label = document.createElement('span');
+          label.className = 'graph-label';
+          label.textContent = rule;
+          disciplineGraph.appendChild(label);
+
+          entries.forEach((entry) => {
+            const cell = document.createElement('span');
+            const completed = entry.checked.includes(String(index));
+            cell.className = completed ? 'graph-cell done' : 'graph-cell';
+            cell.title = `${entry.date}: ${completed ? 'Completed' : 'Not completed'} - ${rule}`;
+            cell.setAttribute('aria-label', cell.title);
+            disciplineGraph.appendChild(cell);
+          });
+        });
+
+        const latest = entries[entries.length - 1];
+        const previous = entries[entries.length - 2];
+        graphStatus.textContent = `${entries.length} day${entries.length === 1 ? '' : 's'} tracked`;
+
+        rules.forEach((rule, index) => {
+          const latestDone = latest.checked.includes(String(index));
+          const previousDone = previous && previous.checked.includes(String(index));
+
+          if (latestDone && previous && !previousDone) {
+            const item = document.createElement('li');
+            item.textContent = rule;
+            improvingList.appendChild(item);
+          }
+
+          if (!latestDone) {
+            const item = document.createElement('li');
+            item.textContent = rule;
+            focusList.appendChild(item);
+          }
+        });
+
+        if (!improvingList.children.length) {
+          improvingList.innerHTML = `<li>${previous ? 'No new improvement compared with the previous day.' : 'Submit another day to compare improvement.'}</li>`;
+        }
+
+        if (!focusList.children.length) {
+          focusList.innerHTML = '<li>All disciplines completed today.</li>';
+        }
+      }
+
       function collectCheckedRules() {
         const checked = [...document.querySelectorAll('#formChecklist input[type="checkbox"]:checked')];
         return checked.map((checkbox) => checkbox.id.replace('rule-', ''));
@@ -969,6 +1171,7 @@
         entries.push(entry);
         saveEntries(entries);
         renderHistory();
+        renderDisciplineGraph();
 
         const finalPercent = Math.round((entry.completed / entry.total) * 100);
         progressRing.style.strokeDashoffset = String(circumference - (finalPercent / 100) * circumference);
@@ -993,6 +1196,7 @@
       function clearHistory() {
         localStorage.removeItem(STORAGE_KEY);
         renderHistory();
+        renderDisciplineGraph();
         percentText.textContent = '0%';
         progressRing.style.strokeDashoffset = String(circumference);
       }
@@ -1001,6 +1205,7 @@
       renderChecklistTarget(formChecklist);
       setDefaultDate();
       renderHistory();
+      renderDisciplineGraph();
       updateProgressFromForm();
 
       document.querySelectorAll('#formChecklist input[type="checkbox"]').forEach((checkbox) => {
