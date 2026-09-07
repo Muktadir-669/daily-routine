@@ -15,6 +15,7 @@
         --secondary: #9dffb5;
         --warning: #ffd166;
         --danger: #ff6b6b;
+        --accent: #ff9f68;
         --text: #edf6ff;
         --muted: #9bb4c6;
         --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
@@ -30,6 +31,8 @@
 
       body {
         margin: 0;
+        min-width: 320px;
+        overflow-x: hidden;
         font-family: Arial, Helvetica, sans-serif;
         background:
           radial-gradient(circle at top, rgba(126, 224, 255, 0.14), transparent 25%),
@@ -77,22 +80,82 @@
 
       .nav {
         display: flex;
-        gap: 16px;
+        gap: 8px;
         flex-wrap: wrap;
+        justify-content: flex-end;
       }
 
       .nav a {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        column-gap: 8px;
+        min-width: 92px;
+        padding: 9px 12px 10px;
+        border: 1px solid rgba(150, 185, 210, 0.14);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.025);
         color: var(--muted);
-        padding: 8px 12px;
-        border-radius: 999px;
-        border: 1px solid transparent;
-        transition: 0.25s ease;
+        transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+      }
+
+      .nav a::after {
+        content: '';
+        position: absolute;
+        right: 10px;
+        bottom: 6px;
+        left: 34px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--primary);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.25s ease;
+      }
+
+      .nav a:first-child {
+        border-color: rgba(126, 224, 255, 0.35);
+        background: rgba(126, 224, 255, 0.08);
+        color: var(--text);
+      }
+
+      .nav a:first-child::after,
+      .nav a:hover::after {
+        transform: scaleX(1);
+      }
+
+      .nav-index {
+        grid-row: 1 / span 2;
+        align-self: center;
+        color: var(--primary);
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .nav-title {
+        color: inherit;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        line-height: 1.1;
+        text-transform: uppercase;
+      }
+
+      .nav-note {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 0.62rem;
+        line-height: 1;
       }
 
       .nav a:hover {
         color: var(--text);
-        border-color: var(--line);
-        background: rgba(255, 255, 255, 0.02);
+        border-color: rgba(126, 224, 255, 0.45);
+        background: rgba(126, 224, 255, 0.09);
+        transform: translateY(-2px);
       }
 
       .hero {
@@ -152,6 +215,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        min-height: 46px;
         border: none;
         border-radius: 14px;
         padding: 14px 22px;
@@ -162,6 +226,14 @@
 
       .btn:hover {
         transform: translateY(-1px);
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible {
+        outline: 3px solid rgba(126, 224, 255, 0.45);
+        outline-offset: 3px;
       }
 
       .btn-primary {
@@ -179,6 +251,64 @@
         display: grid;
         grid-template-rows: auto auto;
         gap: 18px;
+      }
+
+      .digital-watch {
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 85% 15%, rgba(126, 224, 255, 0.16), transparent 32%),
+          linear-gradient(145deg, rgba(5, 15, 22, 0.98), rgba(14, 42, 51, 0.94));
+        border: 1px solid rgba(126, 224, 255, 0.26);
+        border-radius: 22px;
+        padding: 20px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 30px rgba(0,0,0,0.18);
+      }
+
+      .watch-label {
+        color: var(--primary);
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .watch-time {
+        margin: 10px 0 4px;
+        color: var(--text);
+        font-family: 'Courier New', Courier, monospace;
+        font-size: clamp(2.2rem, 4vw, 3.4rem);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        line-height: 1;
+        text-shadow: 0 0 18px rgba(126, 224, 255, 0.25);
+      }
+
+      .watch-date,
+      .watch-zone {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .watch-zone {
+        margin-top: 5px;
+        color: var(--secondary);
+      }
+
+      .watch-focus {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        margin-top: 16px;
+        padding-top: 13px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .watch-focus a {
+        color: var(--warning);
+        font-weight: 700;
       }
 
       .goal-box {
@@ -258,6 +388,21 @@
       .stat-card strong {
         margin-top: 18px;
         font-size: clamp(1.3rem, 2vw, 2rem);
+      }
+
+      .history-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+
+      .delete-entry {
+        border: 1px solid rgba(255, 107, 107, 0.25);
+        border-radius: 9px;
+        padding: 7px 10px;
+        background: rgba(255, 107, 107, 0.08);
+        color: var(--danger);
+        cursor: pointer;
       }
 
       .section-box {
@@ -633,6 +778,139 @@
         font-size: 0.88rem;
       }
 
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .btn-small {
+        padding: 10px 14px;
+        font-size: 0.86rem;
+      }
+
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .analytics-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+        background: rgba(255,255,255,0.02);
+      }
+
+      .analytics-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-bottom: 8px;
+      }
+
+      .analytics-card strong {
+        font-size: 1.55rem;
+      }
+
+      .chart-bars {
+        display: flex;
+        align-items: end;
+        gap: 8px;
+        height: 150px;
+        margin-top: 20px;
+        padding: 0 4px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .chart-bar {
+        flex: 1;
+        min-width: 12px;
+        height: 8px;
+        border-radius: 6px 6px 0 0;
+        background: linear-gradient(180deg, var(--primary), var(--secondary));
+        position: relative;
+        transition: height 0.3s ease;
+      }
+
+      .chart-bar span {
+        position: absolute;
+        bottom: calc(100% + 5px);
+        left: 50%;
+      .rule-report {
+        margin-top: 22px;
+        overflow-x: auto;
+      }
+
+      .rule-report table {
+        width: 100%;
+        min-width: 620px;
+        border-collapse: collapse;
+      }
+
+      .rule-report th,
+      .rule-report td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .rule-report th {
+        color: var(--text);
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .rule-report td:first-child {
+        color: var(--text);
+      }
+
+      .rule-score {
+        color: var(--secondary) !important;
+        font-weight: 700;
+      }
+        transform: translateX(-50%);
+        color: var(--muted);
+        font-size: 0.7rem;
+        white-space: nowrap;
+      }
+
+      .account-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .account-status {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .import-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .import-label input {
+        display: none;
+      }
+
+      .reminder-row {
+        display: flex;
+        gap: 12px;
+        align-items: end;
+        flex-wrap: wrap;
+      }
+
+      .reminder-row .field {
+        min-width: 180px;
+      }
+
       @media (max-width: 900px) {
         .hero,
         .rules-layout,
@@ -644,24 +922,101 @@
         .discipline-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
+
+        .hero {
+          padding: 26px;
+        }
       }
 
       @media (max-width: 640px) {
-        .topbar,
-        .section-heading {
+        .topbar {
           flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+          padding-bottom: 20px;
+        }
+
+        .nav {
+          width: calc(100vw - 24px);
+          justify-content: flex-start;
+          flex-wrap: nowrap;
+          gap: 4px;
+          overflow-x: auto;
+          padding-bottom: 4px;
+          scrollbar-width: thin;
+        }
+
+        .nav a {
+          flex: 0 0 auto;
+          min-width: 88px;
+          padding: 8px 10px 9px;
+        }
+
+        .section-heading {
           align-items: flex-start;
         }
 
+        .section-box {
+          padding: 20px 16px;
+          border-radius: 20px;
+        }
         .stats-grid,
         .discipline-grid,
         .form-grid,
-        .check-list {
+        .check-list,
+        .analytics-grid,
+        .account-grid {
           grid-template-columns: 1fr;
         }
 
         .hero {
-          padding: 22px 18px;
+          gap: 18px;
+          padding: 20px 16px;
+          border-radius: 22px;
+        }
+
+        .hero-copy {
+          order: 2;
+        }
+
+        .hero-panel {
+          order: 1;
+          gap: 14px;
+        }
+
+        h1 {
+          font-size: clamp(2rem, 10vw, 2.8rem);
+        }
+
+        .hero-copy p {
+          font-size: 0.98rem;
+        }
+
+        .cta-row,
+        .submit-actions {
+          width: 100%;
+        }
+
+        .cta-row .btn,
+        .submit-actions .btn {
+          flex: 1 1 150px;
+        }
+
+        .digital-watch,
+        .goal-box {
+          border-radius: 18px;
+        }
+
+        .watch-time {
+          font-size: clamp(2rem, 11vw, 3rem);
+        }
+
+        .watch-focus {
+          align-items: flex-start;
+        }
+
+        .watch-focus span {
+          max-width: 210px;
         }
 
         .page-shell {
@@ -678,10 +1033,11 @@
           <span>Discipline</span>
         </div>
         <nav class="nav">
-          <a href="#discipline">DISCIPLINE</a>
-          <a href="#routine">Routine</a>
-          <a href="#submit">Submit</a>
-          <a href="#history">History</a>
+          <a href="#discipline"><span class="nav-index">01</span><span class="nav-title">Discipline</span><span class="nav-note">Mindset</span></a>
+          <a href="#routine"><span class="nav-index">02</span><span class="nav-title">Routine</span><span class="nav-note">Daily system</span></a>
+          <a href="#submit"><span class="nav-index">03</span><span class="nav-title">Submit</span><span class="nav-note">Log today</span></a>
+          <a href="#history"><span class="nav-index">04</span><span class="nav-title">History</span><span class="nav-note">Your record</span></a>
+          <a href="#analytics"><span class="nav-index">05</span><span class="nav-title">Analytics</span><span class="nav-note">See progress</span></a>
         </nav>
       </header>
 
@@ -700,6 +1056,16 @@
         </div>
 
         <div class="hero-panel">
+          <div class="digital-watch" aria-live="polite">
+            <div class="watch-label">Live local time</div>
+            <div class="watch-time" id="digitalClock">00:00:00</div>
+            <div class="watch-date" id="digitalDate">Loading date...</div>
+            <div class="watch-zone" id="digitalZone">Loading timezone...</div>
+            <div class="watch-focus">
+              <span>Time is moving. Protect your next hour.</span>
+              <a href="#submit">Focus now</a>
+            </div>
+          </div>
           <div class="goal-box">
             <div class="goal-title">Challenge Goal</div>
             <div class="goal-value">365 Days</div>
@@ -744,6 +1110,75 @@
             <span>Screen Time</span>
             <strong>4 Hours Max</strong>
           </div>
+          <div class="stat-card">
+            <span>Current Streak</span>
+            <strong id="currentStreak">0 Days</strong>
+          </div>
+          <div class="stat-card">
+            <span>Recent Average</span>
+            <strong id="recentAverage">0%</strong>
+          </div>
+        </section>
+
+        <section class="section-box" id="analytics">
+          <div class="section-heading">
+            <h2>Weekly &amp; Monthly Analytics</h2>
+            <div class="toolbar">
+              <button type="button" class="btn btn-secondary btn-small" id="weeklyReportBtn">Weekly</button>
+              <button type="button" class="btn btn-secondary btn-small" id="monthlyReportBtn">Monthly</button>
+            </div>
+          </div>
+          <div class="analytics-grid">
+            <div class="analytics-card"><span>Tracked days</span><strong id="periodDays">0</strong></div>
+            <div class="analytics-card"><span>Average completion</span><strong id="periodAverage">0%</strong></div>
+            <div class="analytics-card"><span>Water average</span><strong id="periodWater">0L</strong></div>
+            <div class="analytics-card"><span>Sleep average</span><strong id="periodSleep">0h</strong></div>
+          </div>
+          <div class="chart-bars" id="analyticsChart" aria-label="Completion chart"></div>
+          <div class="rule-report" id="ruleReport" aria-live="polite"></div>
+        </section>
+
+        <section class="section-box" id="account">
+          <div class="section-heading">
+            <h2>Account &amp; Backup</h2>
+            <span class="pill" id="syncStatus">Local mode</span>
+          </div>
+          <div class="account-grid">
+            <div>
+              <div class="field">
+                <label for="profileName">Profile name</label>
+                <input type="text" id="profileName" placeholder="Your name" />
+              </div>
+              <div class="submit-actions">
+                <button type="button" class="btn btn-primary btn-small" id="saveProfile">Save profile</button>
+                <button type="button" class="btn btn-secondary btn-small" id="syncData">Sync data</button>
+              </div>
+              <p class="account-status" id="accountStatus">Your profile is stored on this device.</p>
+            </div>
+            <div>
+              <p class="account-status">Backup your routines before changing devices. Cloud sync needs a backend endpoint or Firebase configuration.</p>
+              <div class="toolbar">
+                <button type="button" class="btn btn-secondary btn-small" id="exportData">Export backup</button>
+                <label class="btn btn-secondary btn-small import-label" for="importData">Import backup<input type="file" id="importData" accept="application/json" /></label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-box" id="reminders">
+          <div class="section-heading">
+            <h2>Reminder Notification</h2>
+            <span class="pill" id="reminderStatus">Off</span>
+          </div>
+          <div class="reminder-row">
+            <div class="field">
+              <label for="reminderTime">Reminder time</label>
+              <input type="time" id="reminderTime" value="20:00" />
+            </div>
+            <button type="button" class="btn btn-primary btn-small" id="enableReminder">Enable reminder</button>
+            <button type="button" class="btn btn-secondary btn-small" id="disableReminder">Disable</button>
+          </div>
+          <p class="account-status">Notifications work while this page is open. Browser permission is required.</p>
         </section>
 
         <section class="section-box" id="discipline">
@@ -967,10 +1402,28 @@
       const graphStatus = document.getElementById('graphStatus');
       const improvingList = document.getElementById('improvingList');
       const focusList = document.getElementById('focusList');
+      const periodDays = document.getElementById('periodDays');
+      const periodAverage = document.getElementById('periodAverage');
+      const periodWater = document.getElementById('periodWater');
+      const periodSleep = document.getElementById('periodSleep');
+      const analyticsChart = document.getElementById('analyticsChart');
+      const ruleReport = document.getElementById('ruleReport');
+      const profileName = document.getElementById('profileName');
+      const accountStatus = document.getElementById('accountStatus');
+      const syncStatus = document.getElementById('syncStatus');
+      const reminderTime = document.getElementById('reminderTime');
+      const reminderStatus = document.getElementById('reminderStatus');
+      const digitalClock = document.getElementById('digitalClock');
+      const digitalDate = document.getElementById('digitalDate');
+      const digitalZone = document.getElementById('digitalZone');
 
       const STORAGE_KEY = 'disciplineChallengeEntries';
+      const PROFILE_KEY = 'disciplineChallengeProfile';
+      const REMINDER_KEY = 'disciplineChallengeReminder';
       const radius = 70;
       const circumference = 2 * Math.PI * radius;
+      let editingDate = null;
+      let reminderTimer = null;
       progressRing.style.strokeDasharray = String(circumference);
 
       function renderChecklistTarget(container) {
@@ -1013,6 +1466,23 @@
         routineDate.value = localDate.toISOString().split('T')[0];
       }
 
+      function updateDigitalClock() {
+        const now = new Date();
+        digitalClock.textContent = now.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        });
+        digitalDate.textContent = now.toLocaleDateString([], {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        digitalZone.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local timezone';
+      }
+
       function saveEntries(entries) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
       }
@@ -1026,6 +1496,23 @@
         } catch (error) {
           return [];
         }
+      }
+
+      function editEntry(date) {
+        const entry = getEntries().find((item) => item.date === date);
+        if (!entry) return;
+
+        editingDate = date;
+        routineDate.value = entry.date;
+        waterInput.value = entry.water;
+        sleepInput.value = entry.sleep;
+        document.getElementById('dailyNotes').value = entry.notes || '';
+        document.querySelectorAll('#formChecklist input[type="checkbox"]').forEach((checkbox, index) => {
+          checkbox.checked = entry.checked.includes(String(index));
+        });
+        updateProgressFromForm();
+        routineForm.querySelector('button[type="submit"]').textContent = 'Update Routine';
+        document.getElementById('submit').scrollIntoView({ behavior: 'smooth' });
       }
 
       function renderHistory() {
@@ -1067,11 +1554,77 @@
           notes.style.marginTop = '8px';
           notes.textContent = entry.notes ? 'Note: ' + entry.notes : 'Note: No reflection added.';
 
+          const actions = document.createElement('div');
+          actions.className = 'history-actions';
+
+          const deleteButton = document.createElement('button');
+          deleteButton.type = 'button';
+          deleteButton.className = 'delete-entry';
+          deleteButton.textContent = 'Delete';
+          deleteButton.addEventListener('click', () => deleteEntry(entry.date));
+
+          const editButton = document.createElement('button');
+          editButton.type = 'button';
+          editButton.className = 'btn btn-secondary btn-small';
+          editButton.textContent = 'Edit';
+          editButton.addEventListener('click', () => editEntry(entry.date));
+          actions.appendChild(editButton);
+          actions.appendChild(deleteButton);
+
           item.appendChild(header);
           item.appendChild(meta);
           item.appendChild(notes);
+          item.appendChild(actions);
           historyList.appendChild(item);
         });
+      }
+
+      function renderMetrics() {
+        const entries = getEntries()
+          .filter((entry) => entry.date)
+          .sort((first, second) => second.date.localeCompare(first.date));
+        const streakElement = document.getElementById('currentStreak');
+        const averageElement = document.getElementById('recentAverage');
+
+        if (!entries.length) {
+          streakElement.textContent = '0 Days';
+          averageElement.textContent = '0%';
+          return;
+        }
+
+        const uniqueDates = [...new Set(entries.map((entry) => entry.date))];
+        const today = new Date();
+        const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+          .toISOString()
+          .split('T')[0];
+        let streak = uniqueDates[0] === localToday ? 1 : 0;
+
+        for (let index = 1; streak > 0 && index < uniqueDates.length; index += 1) {
+          const latestDate = new Date(uniqueDates[index - 1] + 'T00:00:00');
+          const previousDate = new Date(uniqueDates[index] + 'T00:00:00');
+          const dayDifference = Math.round((latestDate - previousDate) / 86400000);
+          if (dayDifference !== 1) break;
+          streak += 1;
+        }
+
+        const recentEntries = entries.slice(0, 7);
+        const average = Math.round(
+          recentEntries.reduce((total, entry) => total + Number(entry.percent || 0), 0) /
+            recentEntries.length
+        );
+        streakElement.textContent = streak + (streak === 1 ? ' Day' : ' Days');
+        averageElement.textContent = average + '%';
+      }
+
+      function deleteEntry(date) {
+        const confirmed = window.confirm('Delete the routine submitted on ' + date + '?');
+        if (!confirmed) return;
+
+        const entries = getEntries().filter((entry) => entry.date !== date);
+        saveEntries(entries);
+        renderHistory();
+        renderDisciplineGraph();
+        renderMetrics();
       }
 
       function renderDisciplineGraph() {
@@ -1148,6 +1701,58 @@
         return checked.map((checkbox) => checkbox.id.replace('rule-', ''));
       }
 
+      function renderRuleReport(selected, period) {
+        if (!selected.length) {
+          ruleReport.innerHTML = '<div class="empty">Submit routines to generate a report for each rule.</div>';
+          return;
+        }
+
+        const periodLabel = period === 'month' ? 'Monthly' : 'Weekly';
+        const rows = rules.map((rule, index) => {
+          const completedDays = selected.filter((entry) => entry.checked.includes(String(index))).length;
+          const percentage = Math.round((completedDays / selected.length) * 100);
+          return `<tr><td>${index + 1}. ${rule}</td><td>${completedDays}/${selected.length}</td><td class="rule-score">${percentage}%</td></tr>`;
+        }).join('');
+
+        ruleReport.innerHTML = `
+          <table>
+            <thead><tr><th>${periodLabel} rule report</th><th>Completed days</th><th>Success rate</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      }
+
+      function renderAnalytics(period = 'week') {
+        const entries = getEntries().slice().sort((first, second) => first.date.localeCompare(second.date));
+        const selected = entries.slice(-(period === 'month' ? 30 : 7));
+        periodDays.textContent = selected.length;
+
+        if (!selected.length) {
+          periodAverage.textContent = '0%';
+          periodWater.textContent = '0L';
+          periodSleep.textContent = '0h';
+          analyticsChart.innerHTML = '<span class="account-status">Submit routines to see your trend.</span>';
+          renderRuleReport(selected, period);
+          return;
+        }
+
+        const average = (field) => selected.reduce((total, entry) => total + Number(entry[field] || 0), 0) / selected.length;
+        periodAverage.textContent = Math.round(average('percent')) + '%';
+        periodWater.textContent = average('water').toFixed(1) + 'L';
+        periodSleep.textContent = average('sleep').toFixed(1) + 'h';
+        analyticsChart.innerHTML = '';
+        selected.forEach((entry) => {
+          const bar = document.createElement('div');
+          bar.className = 'chart-bar';
+          bar.style.height = Math.max(8, entry.percent) + '%';
+          bar.title = `${entry.date}: ${entry.percent}%`;
+          const label = document.createElement('span');
+          label.textContent = entry.percent + '%';
+          bar.appendChild(label);
+          analyticsChart.appendChild(bar);
+        });
+        renderRuleReport(selected, period);
+      }
+
       function handleSubmit(event) {
         event.preventDefault();
 
@@ -1168,10 +1773,32 @@
         };
 
         const entries = getEntries();
-        entries.push(entry);
+        const existingIndex = entries.findIndex((storedEntry) => storedEntry.date === entry.date);
+        if (existingIndex !== -1 && editingDate !== entry.date) {
+          const existingMessage = routineForm.querySelector('.success-message');
+          if (existingMessage) existingMessage.remove();
+          const duplicateMessage = document.createElement('div');
+          duplicateMessage.className = 'success-message';
+          duplicateMessage.style.marginTop = '16px';
+          duplicateMessage.style.padding = '12px 14px';
+          duplicateMessage.style.borderRadius = '12px';
+          duplicateMessage.style.background = 'rgba(255,209,102,0.08)';
+          duplicateMessage.style.border = '1px solid rgba(255,209,102,0.2)';
+          duplicateMessage.style.color = '#ffe7a3';
+          duplicateMessage.textContent = 'A routine for this date already exists. Edit that entry or choose another date.';
+          routineForm.appendChild(duplicateMessage);
+          return;
+        }
+
+        if (existingIndex !== -1) entries[existingIndex] = entry;
+        else entries.push(entry);
         saveEntries(entries);
         renderHistory();
         renderDisciplineGraph();
+        renderMetrics();
+        renderAnalytics();
+        editingDate = null;
+        routineForm.querySelector('button[type="submit"]').textContent = 'Submit Routine';
 
         const finalPercent = Math.round((entry.completed / entry.total) * 100);
         progressRing.style.strokeDashoffset = String(circumference - (finalPercent / 100) * circumference);
@@ -1197,8 +1824,88 @@
         localStorage.removeItem(STORAGE_KEY);
         renderHistory();
         renderDisciplineGraph();
+        renderMetrics();
+        renderAnalytics();
         percentText.textContent = '0%';
         progressRing.style.strokeDashoffset = String(circumference);
+      }
+
+      function loadProfile() {
+        const profile = localStorage.getItem(PROFILE_KEY);
+        if (profile) {
+          profileName.value = profile;
+          accountStatus.textContent = `Signed in locally as ${profile}.`;
+        }
+      }
+
+      function exportBackup() {
+        const backup = {
+          version: 1,
+          exportedAt: new Date().toISOString(),
+          profile: localStorage.getItem(PROFILE_KEY) || '',
+          entries: getEntries()
+        };
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'discipline-backup.json';
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }
+
+      function importBackup(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const backup = JSON.parse(reader.result);
+            if (!Array.isArray(backup.entries)) throw new Error('Invalid backup');
+            saveEntries(backup.entries);
+            if (backup.profile) localStorage.setItem(PROFILE_KEY, backup.profile);
+            loadProfile();
+            renderHistory();
+            renderDisciplineGraph();
+            renderMetrics();
+            renderAnalytics();
+            accountStatus.textContent = 'Backup imported successfully on this device.';
+          } catch (error) {
+            accountStatus.textContent = 'Could not import this backup file.';
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+      }
+
+      function updateReminder() {
+        if (reminderTimer) clearInterval(reminderTimer);
+        const reminder = JSON.parse(localStorage.getItem(REMINDER_KEY) || 'null');
+        if (!reminder || !reminder.enabled) {
+          reminderStatus.textContent = 'Off';
+          return;
+        }
+        reminderTime.value = reminder.time;
+        reminderStatus.textContent = `On at ${reminder.time}`;
+        reminderTimer = setInterval(() => {
+          const current = new Date().toTimeString().slice(0, 5);
+          if (current === reminder.time && Notification.permission === 'granted') {
+            new Notification('Discipline reminder', { body: 'Complete today\'s routine.' });
+          }
+        }, 60000);
+      }
+
+      async function enableReminder() {
+        if (!('Notification' in window)) {
+          reminderStatus.textContent = 'Unsupported';
+          return;
+        }
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          reminderStatus.textContent = 'Permission denied';
+          return;
+        }
+        localStorage.setItem(REMINDER_KEY, JSON.stringify({ enabled: true, time: reminderTime.value }));
+        updateReminder();
       }
 
       renderChecklistTarget(dailyChecklist);
@@ -1206,6 +1913,12 @@
       setDefaultDate();
       renderHistory();
       renderDisciplineGraph();
+      renderMetrics();
+      renderAnalytics();
+      loadProfile();
+      updateReminder();
+      updateDigitalClock();
+      setInterval(updateDigitalClock, 1000);
       updateProgressFromForm();
 
       document.querySelectorAll('#formChecklist input[type="checkbox"]').forEach((checkbox) => {
@@ -1214,6 +1927,25 @@
 
       routineForm.addEventListener('submit', handleSubmit);
       clearHistoryBtn.addEventListener('click', clearHistory);
+      document.getElementById('weeklyReportBtn').addEventListener('click', () => renderAnalytics('week'));
+      document.getElementById('monthlyReportBtn').addEventListener('click', () => renderAnalytics('month'));
+      document.getElementById('saveProfile').addEventListener('click', () => {
+        const name = profileName.value.trim();
+        if (!name) return;
+        localStorage.setItem(PROFILE_KEY, name);
+        accountStatus.textContent = `Signed in locally as ${name}.`;
+      });
+      document.getElementById('exportData').addEventListener('click', exportBackup);
+      document.getElementById('importData').addEventListener('change', importBackup);
+      document.getElementById('syncData').addEventListener('click', () => {
+        syncStatus.textContent = 'Local only';
+        accountStatus.textContent = 'Local data is ready. Add a backend endpoint for real cloud sync.';
+      });
+      document.getElementById('enableReminder').addEventListener('click', enableReminder);
+      document.getElementById('disableReminder').addEventListener('click', () => {
+        localStorage.removeItem(REMINDER_KEY);
+        updateReminder();
+      });
     </script>
   </body>
 </html>
