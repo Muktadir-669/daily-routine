@@ -4,58 +4,92 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>365 Days Discipline Challenge</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23040d16'/%3E%3Cpath d='M20 14h18c10 0 16 7 16 18s-6 18-16 18H20V14zm12 10v16h6c4 0 7-3 7-8s-3-8-7-8h-6z' fill='%237ad9ff'/%3E%3Cpath d='M22 14h10v36H22z' fill='%239cf7c5' opacity='.9'/%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23040d16'/%3E%3Cpath d='M20 14h18c10 0 16 7 16 18s-6 18-16 18H20V14zm12 10v16h6c4 0 7-3 7-8s-3-8-7-8h-6z' fill='%237ad9ff'/%3E%3Cpath d='M22 14h10v36H22z' fill='%239cf7c5' opacity='.9'/%3E%3C/svg%3E" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <style>
       :root {
-        --bg: #07141f;
-        --bg-soft: #0d1f2b;
-        --card: rgba(14, 25, 35, 0.9);
-        --card-strong: #122b3b;
-        --line: rgba(150, 185, 210, 0.2);
-        --primary: #7ee0ff;
-        --secondary: #9dffb5;
+        --bg: #040d16;
+        --bg-2: #0b1d2d;
+        --bg-soft: #0f2335;
+        --bg-elevated: rgba(15, 29, 40, 0.92);
+        --card: rgba(12, 24, 33, 0.78);
+        --card-strong: rgba(17, 32, 42, 0.9);
+        --line: rgba(165, 210, 235, 0.14);
+        --line-strong: rgba(165, 210, 235, 0.22);
+        --primary: #7ad9ff;
+        --primary-strong: #4abdfb;
+        --secondary: #9cf7c5;
         --warning: #ffd166;
         --danger: #ff6b6b;
         --accent: #ff9f68;
-        --text: #edf6ff;
-        --muted: #9bb4c6;
-        --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+        --text: #edf7ff;
+        --muted: #9fbac9;
+        --shadow: 0 30px 72px rgba(1, 7, 12, 0.38);
+        --shadow-soft: 0 20px 44px rgba(2, 8, 14, 0.26);
+        --glass: rgba(12, 24, 35, 0.72);
+        --glass-strong: rgba(15, 29, 40, 0.82);
+        --glass-soft: rgba(255,255,255,0.025);
+        --chip: rgba(122, 217, 255, 0.1);
       }
 
-      * {
-        box-sizing: border-box;
+      @keyframes floatGlow {
+        0%, 100% { transform: translateY(0px); opacity: 0.8; }
+        50% { transform: translateY(-10px); opacity: 1; }
       }
 
-      html {
-        scroll-behavior: smooth;
+      @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 0 rgba(122, 217, 255, 0.0); }
+        50% { box-shadow: 0 0 26px rgba(122, 217, 255, 0.25); }
       }
+
+      @keyframes cardLift {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
 
       body {
         margin: 0;
         min-width: 320px;
         overflow-x: hidden;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: 'Segoe UI', Arial, sans-serif;
         background:
-          radial-gradient(circle at top, rgba(126, 224, 255, 0.14), transparent 25%),
-          linear-gradient(135deg, var(--bg), #0b1720 45%, #08131b);
+          radial-gradient(circle at top left, rgba(122, 217, 255, 0.12), transparent 24%),
+          radial-gradient(circle at top right, rgba(74, 119, 255, 0.11), transparent 20%),
+          linear-gradient(135deg, #040d16, #0b1720 44%, #071319 100%);
         color: var(--text);
+        letter-spacing: 0.01em;
       }
 
-      a {
-        color: inherit;
-        text-decoration: none;
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at 15% 20%, rgba(122, 217, 255, 0.12), transparent 18%),
+                    radial-gradient(circle at 85% 18%, rgba(82, 125, 250, 0.08), transparent 16%);
+        pointer-events: none;
+        z-index: 0;
       }
+
+      a { color: inherit; text-decoration: none; }
 
       .page-shell {
+        position: relative;
+        z-index: 1;
         width: min(1200px, 92%);
         margin: 0 auto;
-        padding: 24px 0 60px;
+        padding: 22px 0 72px;
       }
 
       .topbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 18px 0 30px;
+        padding: 14px 0 28px;
       }
 
       .brand {
@@ -73,16 +107,23 @@
         display: grid;
         place-items: center;
         border-radius: 14px;
-        background: linear-gradient(135deg, var(--primary), #4db7d8);
-        color: #061920;
+        background: linear-gradient(135deg, #98ebff, var(--primary-strong));
+        color: #071923;
         font-weight: 800;
+        box-shadow: 0 12px 24px rgba(122, 217, 255, 0.2);
       }
 
       .nav {
         display: flex;
-        gap: 8px;
+        gap: 10px;
         flex-wrap: wrap;
         justify-content: flex-end;
+        padding: 8px 10px;
+        border: 1px solid rgba(162, 200, 224, 0.08);
+        border-radius: 18px;
+        background: rgba(4, 13, 18, 0.2);
+        backdrop-filter: blur(14px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
       }
 
       .nav a {
@@ -91,13 +132,14 @@
         grid-template-columns: auto 1fr;
         grid-template-rows: auto auto;
         column-gap: 8px;
-        min-width: 92px;
-        padding: 9px 12px 10px;
-        border: 1px solid rgba(150, 185, 210, 0.14);
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.025);
+        min-width: 96px;
+        padding: 10px 12px 11px;
+        border: 1px solid transparent;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.014);
         color: var(--muted);
-        transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+        transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.018);
       }
 
       .nav a::after {
@@ -115,9 +157,10 @@
       }
 
       .nav a:first-child {
-        border-color: rgba(126, 224, 255, 0.35);
-        background: rgba(126, 224, 255, 0.08);
+        border-color: rgba(126, 224, 255, 0.2);
+        background: rgba(126, 224, 255, 0.06);
         color: var(--text);
+        box-shadow: 0 12px 26px rgba(7, 24, 34, 0.2);
       }
 
       .nav a:first-child::after,
@@ -153,20 +196,46 @@
 
       .nav a:hover {
         color: var(--text);
-        border-color: rgba(126, 224, 255, 0.45);
-        background: rgba(126, 224, 255, 0.09);
+        border-color: rgba(126, 224, 255, 0.2);
+        background: rgba(126, 224, 255, 0.05);
         transform: translateY(-2px);
+        box-shadow: 0 14px 22px rgba(8, 20, 30, 0.18);
       }
 
       .hero {
+        position: relative;
         display: grid;
         grid-template-columns: 1.3fr 0.7fr;
-        gap: 24px;
-        background: linear-gradient(135deg, rgba(14, 31, 40, 0.95), rgba(17, 39, 52, 0.8));
-        border: 1px solid var(--line);
-        border-radius: 28px;
-        box-shadow: var(--shadow);
-        padding: 32px;
+        gap: 26px;
+        background: linear-gradient(135deg, rgba(16, 34, 46, 0.97), rgba(12, 24, 34, 0.9) 40%, rgba(11, 28, 39, 0.94));
+        border: 1px solid rgba(167, 210, 232, 0.12);
+        border-radius: 30px;
+        box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.04);
+        padding: 36px 34px;
+        overflow: hidden;
+        backdrop-filter: blur(16px);
+        animation: pulseGlow 4s ease-in-out infinite;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: auto -8% -58% auto;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(122, 217, 255, 0.22), rgba(94, 142, 255, 0.16), transparent 70%);
+        filter: blur(16px);
+        animation: floatGlow 6s ease-in-out infinite;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: 29px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.025), transparent 26%, transparent 100%);
+        pointer-events: none;
       }
 
       .hero-copy {
@@ -178,12 +247,12 @@
       .eyebrow {
         display: inline-block;
         width: fit-content;
-        padding: 8px 14px;
+        padding: 8px 12px;
         border-radius: 999px;
-        background: rgba(126, 224, 255, 0.12);
+        background: rgba(122, 217, 255, 0.08);
         color: var(--primary);
-        border: 1px solid rgba(126, 224, 255, 0.2);
-        font-size: 12px;
+        border: 1px solid rgba(122, 217, 255, 0.16);
+        font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 0.12em;
         margin-bottom: 16px;
@@ -192,13 +261,14 @@
       h1 {
         margin: 0 0 12px;
         font-size: clamp(2.2rem, 4vw, 4rem);
-        line-height: 1.06;
-        letter-spacing: -0.05em;
+        line-height: 1.03;
+        letter-spacing: -0.06em;
+        font-weight: 750;
       }
 
       .hero-copy p {
         margin: 0;
-        font-size: 1.04rem;
+        font-size: 1rem;
         line-height: 1.7;
         color: var(--muted);
         max-width: 620px;
@@ -221,11 +291,13 @@
         padding: 14px 22px;
         font-weight: 700;
         cursor: pointer;
-        transition: transform 0.2s ease, opacity 0.2s ease;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
       }
 
       .btn:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
       }
 
       button:focus-visible,
@@ -237,8 +309,9 @@
       }
 
       .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #74d5c4);
+        background: linear-gradient(135deg, #8fe9ff, var(--primary-strong));
         color: #061923;
+        box-shadow: 0 14px 28px rgba(122, 217, 255, 0.2);
       }
 
       .btn-secondary {
@@ -257,12 +330,13 @@
         position: relative;
         overflow: hidden;
         background:
-          radial-gradient(circle at 85% 15%, rgba(126, 224, 255, 0.16), transparent 32%),
-          linear-gradient(145deg, rgba(5, 15, 22, 0.98), rgba(14, 42, 51, 0.94));
-        border: 1px solid rgba(126, 224, 255, 0.26);
+          radial-gradient(circle at 85% 15%, rgba(122, 217, 255, 0.14), transparent 32%),
+          linear-gradient(145deg, rgba(5, 15, 22, 0.98), rgba(15, 40, 52, 0.94));
+        border: 1px solid rgba(122, 217, 255, 0.2);
         border-radius: 22px;
         padding: 20px;
         box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 30px rgba(0,0,0,0.18);
+        animation: pulseGlow 5s ease-in-out infinite;
       }
 
       .watch-label {
@@ -306,16 +380,14 @@
         font-size: 0.78rem;
       }
 
-      .watch-focus a {
-        color: var(--warning);
-        font-weight: 700;
-      }
+      .watch-focus a { color: var(--warning); font-weight: 700; }
 
       .goal-box {
-        background: rgba(7, 18, 23, 0.9);
+        background: linear-gradient(180deg, rgba(10, 20, 29, 0.9), rgba(7, 17, 22, 0.9));
         border: 1px solid var(--line);
         border-radius: 22px;
         padding: 20px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
       }
 
       .goal-title {
@@ -338,10 +410,28 @@
       }
 
       .mini-card {
-        background: rgba(255,255,255,0.02);
+        background: linear-gradient(180deg, rgba(255,255,255,0.026), rgba(255,255,255,0.013));
         border: 1px solid var(--line);
         border-radius: 16px;
         padding: 16px;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(8px);
+        animation: cardLift 7s ease-in-out infinite;
+      }
+
+      .mini-card::before,
+      .stat-card::before,
+      .discipline-card::before,
+      .progress-card::before,
+      .history-item::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(118, 217, 255, 0.7), transparent);
+        opacity: 0.7;
       }
 
       .mini-label {
@@ -351,9 +441,7 @@
         margin-bottom: 8px;
       }
 
-      .mini-card strong {
-        font-size: 1.4rem;
-      }
+      .mini-card strong { font-size: 1.4rem; }
 
       main {
         display: grid;
@@ -364,37 +452,56 @@
       .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
+        gap: 20px;
       }
 
       .stat-card {
-        background: rgba(9, 22, 31, 0.85);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: 20px 18px;
-        min-height: 120px;
+        position: relative;
+        background: linear-gradient(180deg, rgba(14, 30, 40, 0.88), rgba(7, 16, 22, 0.9));
+        border: 1px solid rgba(167, 210, 232, 0.12);
+        border-radius: 20px;
+        padding: 22px 18px;
+        min-height: 128px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 18px 30px rgba(1, 8, 14, 0.16);
+        animation: cardLift 6s ease-in-out infinite;
       }
 
       .stat-card span {
-        color: var(--muted);
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
+        display: inline-flex;
+        width: fit-content;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(122, 217, 255, 0.08);
+        border: 1px solid rgba(122, 217, 255, 0.16);
+        color: var(--primary);
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
+      }
+
+      .stat-card:hover,
+      .mini-card:hover,
+      .discipline-card:hover,
+      .history-item:hover,
+      .progress-card:hover {
+        transform: translateY(-5px) scale(1.01);
+        border-color: rgba(122, 217, 255, 0.34);
+        box-shadow: 0 26px 38px rgba(2, 10, 18, 0.22);
       }
 
       .stat-card strong {
         margin-top: 18px;
         font-size: clamp(1.3rem, 2vw, 2rem);
+        color: var(--text);
       }
 
-      .history-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 12px;
-      }
+      .history-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
 
       .delete-entry {
         border: 1px solid rgba(255, 107, 107, 0.25);
@@ -406,11 +513,12 @@
       }
 
       .section-box {
-        background: rgba(10, 20, 28, 0.88);
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        padding: 26px;
-        box-shadow: var(--shadow);
+        background: linear-gradient(180deg, rgba(11, 22, 30, 0.94), rgba(9, 17, 24, 0.88));
+        border: 1px solid rgba(168, 209, 232, 0.12);
+        border-radius: 26px;
+        padding: 28px 28px 26px;
+        box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.02);
+        backdrop-filter: blur(16px);
       }
 
       .section-heading {
@@ -436,43 +544,48 @@
         color: var(--warning);
         background: rgba(255, 209, 102, 0.08);
         border: 1px solid rgba(255, 209, 102, 0.2);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
       }
 
       .discipline-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
       }
 
       .discipline-card {
-        background: rgba(255,255,255,0.02);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: 18px 16px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012));
+        border: 1px solid rgba(167, 210, 232, 0.12);
+        border-radius: 16px;
+        padding: 14px 12px;
+        transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+        backdrop-filter: blur(12px);
+        animation: cardLift 8s ease-in-out infinite;
       }
 
       .discipline-card .letter {
-        width: 46px;
-        height: 46px;
-        border-radius: 12px;
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
         display: grid;
         place-items: center;
         background: linear-gradient(135deg, rgba(126,224,255,0.25), rgba(157,255,181,0.12));
         color: var(--primary);
         font-weight: 800;
-        font-size: 1.25rem;
-        margin-bottom: 12px;
+        font-size: 0.95rem;
+        margin-bottom: 10px;
       }
 
       .discipline-card h3 {
-        margin: 0 0 8px;
-        font-size: 1.18rem;
+        margin: 0 0 6px;
+        font-size: 0.9rem;
       }
 
       .discipline-card p {
         margin: 0;
         color: var(--muted);
-        line-height: 1.7;
+        line-height: 1.5;
+        font-size: 0.7rem;
       }
 
       .rules-layout {
@@ -517,9 +630,7 @@
         padding: 18px;
       }
 
-      .focus-panel h3 {
-        margin-top: 0;
-      }
+      .focus-panel h3 { margin-top: 0; }
 
       .focus-panel ul {
         padding-left: 18px;
@@ -547,7 +658,8 @@
       }
 
       .field input,
-      .field textarea {
+      .field textarea,
+      .field select {
         width: 100%;
         border: 1px solid var(--line);
         background: rgba(5, 14, 20, 0.85);
@@ -562,9 +674,32 @@
         resize: vertical;
       }
 
-      .form-checks {
-        padding-top: 12px;
+      .weekly-review {
+        margin-top: 18px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        background: linear-gradient(135deg, rgba(122, 217, 255, 0.06), rgba(156, 247, 197, 0.04));
+        color: var(--muted);
+        line-height: 1.7;
       }
+
+      .weekly-review strong { color: var(--text); }
+
+      .recovery-panel {
+        margin: 12px 0 14px;
+        padding: 12px;
+        border: 1px solid rgba(255, 209, 102, 0.22);
+        border-radius: 12px;
+        background: rgba(255, 209, 102, 0.05);
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
+
+      .recovery-panel button { margin-top: 9px; }
+
+      .form-checks { padding-top: 12px; }
 
       .submit-actions {
         display: flex;
@@ -580,10 +715,11 @@
       }
 
       .progress-card {
-        background: rgba(255,255,255,0.02);
+        background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.015));
         border: 1px solid var(--line);
         border-radius: 18px;
         padding: 22px;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       }
 
       .ring-wrap {
@@ -623,9 +759,7 @@
         text-align: center;
       }
 
-      .ring-center strong {
-        font-size: 2rem;
-      }
+      .ring-center strong { font-size: 2rem; }
 
       .history-list {
         list-style: none;
@@ -640,6 +774,7 @@
         border-radius: 14px;
         padding: 14px 16px;
         background: rgba(255,255,255,0.015);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       }
 
       .history-header {
@@ -649,14 +784,8 @@
         margin-bottom: 8px;
       }
 
-      .history-date {
-        font-weight: 700;
-      }
-
-      .history-score {
-        color: var(--secondary);
-        font-weight: 700;
-      }
+      .history-date { font-weight: 700; }
+      .history-score { color: var(--secondary); font-weight: 700; }
 
       .history-meta {
         color: var(--muted);
@@ -687,20 +816,14 @@
         margin-bottom: 14px;
       }
 
-      .analytics-heading h3 {
-        margin: 0;
-      }
-
+      .analytics-heading h3 { margin: 0; }
       .analytics-heading p {
         margin: 0;
         color: var(--muted);
         font-size: 0.88rem;
       }
 
-      .graph-scroll {
-        overflow-x: auto;
-        padding-bottom: 6px;
-      }
+      .graph-scroll { overflow-x: auto; padding-bottom: 6px; }
 
       .discipline-graph {
         display: grid;
@@ -762,13 +885,8 @@
         text-transform: uppercase;
       }
 
-      .summary-block.improving h4 {
-        color: var(--secondary);
-      }
-
-      .summary-block.focus h4 {
-        color: var(--accent);
-      }
+      .summary-block.improving h4 { color: var(--secondary); }
+      .summary-block.focus h4 { color: var(--accent); }
 
       .summary-list {
         margin: 0;
@@ -778,17 +896,8 @@
         font-size: 0.88rem;
       }
 
-      .toolbar {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-
-      .btn-small {
-        padding: 10px 14px;
-        font-size: 0.86rem;
-      }
+      .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .btn-small { padding: 10px 14px; font-size: 0.86rem; }
 
       .analytics-grid {
         display: grid;
@@ -810,9 +919,7 @@
         margin-bottom: 8px;
       }
 
-      .analytics-card strong {
-        font-size: 1.55rem;
-      }
+      .analytics-card strong { font-size: 1.55rem; }
 
       .chart-bars {
         display: flex;
@@ -838,6 +945,12 @@
         position: absolute;
         bottom: calc(100% + 5px);
         left: 50%;
+        transform: translateX(-50%);
+        color: var(--muted);
+        font-size: 0.7rem;
+        white-space: nowrap;
+      }
+
       .rule-report {
         margin-top: 22px;
         overflow-x: auto;
@@ -865,19 +978,8 @@
         text-transform: uppercase;
       }
 
-      .rule-report td:first-child {
-        color: var(--text);
-      }
-
-      .rule-score {
-        color: var(--secondary) !important;
-        font-weight: 700;
-      }
-        transform: translateX(-50%);
-        color: var(--muted);
-        font-size: 0.7rem;
-        white-space: nowrap;
-      }
+      .rule-report td:first-child { color: var(--text); }
+      .rule-score { color: var(--secondary) !important; font-weight: 700; }
 
       .account-grid {
         display: grid;
@@ -885,19 +987,148 @@
         gap: 20px;
       }
 
+      .history-title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .history-title-row h3 { margin: 0; }
+
+      .mobile-bottom-nav { display: none; }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .calendar-heading,
+      .calendar-day {
+        min-height: 42px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        font-size: 0.78rem;
+      }
+
+      .calendar-heading {
+        min-height: 30px;
+        border: none;
+        color: var(--muted);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .calendar-day {
+        position: relative;
+        background: rgba(255,255,255,0.02);
+        color: var(--muted);
+      }
+
+      .calendar-day.done {
+        background: linear-gradient(135deg, rgba(122, 217, 255, 0.24), rgba(156, 247, 197, 0.16));
+        border-color: rgba(156, 247, 197, 0.42);
+        color: var(--text);
+      }
+
+      .calendar-day.recovery {
+        background: rgba(255, 209, 102, 0.1);
+        border-color: rgba(255, 209, 102, 0.4);
+        color: var(--warning);
+      }
+
+      .calendar-day.today { box-shadow: inset 0 0 0 2px rgba(255, 209, 102, 0.62); }
+
+      .calendar-score {
+        position: absolute;
+        right: 5px;
+        bottom: 3px;
+        color: var(--secondary);
+        font-size: 0.58rem;
+      }
+
+      .badge-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .badge-card {
+        min-height: 106px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(255,255,255,0.02);
+        opacity: 0.48;
+        transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+      }
+
+      .badge-card.unlocked {
+        opacity: 1;
+        border-color: rgba(255, 209, 102, 0.38);
+        background: linear-gradient(145deg, rgba(255, 209, 102, 0.12), rgba(122, 217, 255, 0.05));
+      }
+
+      .badge-card:hover { transform: translateY(-3px); }
+      .badge-icon { font-size: 1.35rem; }
+      .badge-card strong { display: block; margin-top: 8px; font-size: 0.88rem; }
+      .badge-card span { display: block; margin-top: 5px; color: var(--muted); font-size: 0.72rem; line-height: 1.4; }
+
+      .custom-routine-box {
+        margin-top: 24px;
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+      }
+
+      .custom-routine-box h3 { margin: 0; }
+
+      .custom-routine-form {
+        display: flex;
+        align-items: end;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .custom-routine-form .field { flex: 1 1 260px; }
+      .file-button { cursor: pointer; }
+
+      .custom-rule-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .custom-rule-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .remove-rule {
+        border: 1px solid rgba(255, 107, 107, 0.25);
+        border-radius: 8px;
+        padding: 5px 8px;
+        background: rgba(255, 107, 107, 0.08);
+        color: var(--danger);
+        cursor: pointer;
+      }
+
       .account-status {
         color: var(--muted);
         line-height: 1.6;
-      }
-
-      .import-label {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .import-label input {
-        display: none;
       }
 
       .reminder-row {
@@ -907,25 +1138,12 @@
         flex-wrap: wrap;
       }
 
-      .reminder-row .field {
-        min-width: 180px;
-      }
+      .reminder-row .field { min-width: 180px; }
 
       @media (max-width: 900px) {
-        .hero,
-        .rules-layout,
-        .progress-layout {
-          grid-template-columns: 1fr;
-        }
-
-        .stats-grid,
-        .discipline-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .hero {
-          padding: 26px;
-        }
+        .hero, .rules-layout, .progress-layout { grid-template-columns: 1fr; }
+        .stats-grid, .discipline-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .hero { padding: 26px; }
       }
 
       @media (max-width: 640px) {
@@ -952,76 +1170,58 @@
           padding: 8px 10px 9px;
         }
 
-        .section-heading {
-          align-items: flex-start;
-        }
-
-        .section-box {
-          padding: 20px 16px;
-          border-radius: 20px;
-        }
-        .stats-grid,
-        .discipline-grid,
-        .form-grid,
-        .check-list,
-        .analytics-grid,
-        .account-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .hero {
-          gap: 18px;
-          padding: 20px 16px;
-          border-radius: 22px;
-        }
-
-        .hero-copy {
-          order: 2;
-        }
-
-        .hero-panel {
-          order: 1;
-          gap: 14px;
-        }
-
-        h1 {
-          font-size: clamp(2rem, 10vw, 2.8rem);
-        }
-
-        .hero-copy p {
-          font-size: 0.98rem;
-        }
-
-        .cta-row,
-        .submit-actions {
-          width: 100%;
-        }
-
-        .cta-row .btn,
-        .submit-actions .btn {
-          flex: 1 1 150px;
-        }
-
-        .digital-watch,
-        .goal-box {
+        .section-heading { align-items: flex-start; }
+        .section-box { padding: 20px 16px; border-radius: 20px; }
+        .stats-grid, .discipline-grid, .form-grid, .check-list, .analytics-grid, .account-grid, .badge-grid, .custom-rule-list { grid-template-columns: 1fr; }
+        .hero { gap: 18px; padding: 20px 16px; border-radius: 22px; }
+        .hero-copy { order: 2; }
+        .hero-panel { order: 1; gap: 14px; }
+        h1 { font-size: clamp(2rem, 10vw, 2.8rem); }
+        .hero-copy p { font-size: 0.98rem; }
+        .cta-row, .submit-actions { width: 100%; }
+        .cta-row .btn, .submit-actions .btn { flex: 1 1 150px; }
+        .digital-watch, .goal-box { border-radius: 18px; }
+        .watch-time { font-size: clamp(2rem, 11vw, 3rem); }
+        .watch-focus { align-items: flex-start; }
+        .watch-focus span { max-width: 210px; }
+        .page-shell { width: min(94%, 1200px); }
+        .history-title-row { align-items: flex-start; flex-direction: column; }
+        .history-title-row .btn { width: 100%; }
+        .page-shell { padding-bottom: 104px; }
+        .mobile-bottom-nav {
+          position: fixed;
+          right: 12px;
+          bottom: 12px;
+          left: 12px;
+          z-index: 20;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 6px;
+          padding: 8px;
+          border: 1px solid rgba(165, 210, 235, 0.16);
           border-radius: 18px;
+          background: rgba(5, 16, 24, 0.88);
+          box-shadow: 0 18px 40px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04);
+          backdrop-filter: blur(18px);
         }
 
-        .watch-time {
-          font-size: clamp(2rem, 11vw, 3rem);
+        .mobile-bottom-nav a {
+          display: grid;
+          justify-items: center;
+          gap: 3px;
+          padding: 7px 4px;
+          border-radius: 12px;
+          color: var(--muted);
+          font-size: 0.66rem;
         }
 
-        .watch-focus {
-          align-items: flex-start;
+        .mobile-bottom-nav a:hover,
+        .mobile-bottom-nav a:focus-visible {
+          background: rgba(122, 217, 255, 0.1);
+          color: var(--text);
         }
 
-        .watch-focus span {
-          max-width: 210px;
-        }
-
-        .page-shell {
-          width: min(94%, 1200px);
-        }
+        .mobile-nav-icon { color: var(--primary); font-size: 1rem; line-height: 1; }
       }
     </style>
   </head>
@@ -1038,6 +1238,7 @@
           <a href="#submit"><span class="nav-index">03</span><span class="nav-title">Submit</span><span class="nav-note">Log today</span></a>
           <a href="#history"><span class="nav-index">04</span><span class="nav-title">History</span><span class="nav-note">Your record</span></a>
           <a href="#analytics"><span class="nav-index">05</span><span class="nav-title">Analytics</span><span class="nav-note">See progress</span></a>
+          <a href="#calendar"><span class="nav-index">06</span><span class="nav-title">Calendar</span><span class="nav-note">Badges</span></a>
         </nav>
       </header>
 
@@ -1136,6 +1337,20 @@
           </div>
           <div class="chart-bars" id="analyticsChart" aria-label="Completion chart"></div>
           <div class="rule-report" id="ruleReport" aria-live="polite"></div>
+          <div class="weekly-review" id="weeklyReview" aria-live="polite"></div>
+        </section>
+
+        <section class="section-box" id="calendar">
+          <div class="section-heading">
+            <h2>Calendar &amp; Achievements</h2>
+            <div class="toolbar">
+              <button type="button" class="btn btn-secondary btn-small" id="previousMonth">Previous</button>
+              <span class="pill" id="calendarMonthLabel">Current month</span>
+              <button type="button" class="btn btn-secondary btn-small" id="nextMonth">Next</button>
+            </div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid" aria-label="Routine calendar"></div>
+          <div class="badge-grid" id="badgeGrid" aria-live="polite"></div>
         </section>
 
         <section class="section-box" id="account">
@@ -1152,15 +1367,15 @@
               <div class="submit-actions">
                 <button type="button" class="btn btn-primary btn-small" id="saveProfile">Save profile</button>
                 <button type="button" class="btn btn-secondary btn-small" id="syncData">Sync data</button>
+                <button type="button" class="btn btn-secondary btn-small" id="exportData">Export backup</button>
+                <label class="btn btn-secondary btn-small file-button" for="importData">Import backup</label>
+                <input type="file" id="importData" accept="application/json" hidden />
+                <button type="button" class="btn btn-secondary btn-small" id="installApp" hidden>Install app</button>
               </div>
               <p class="account-status" id="accountStatus">Your profile is stored on this device.</p>
             </div>
             <div>
-              <p class="account-status">Backup your routines before changing devices. Cloud sync needs a backend endpoint or Firebase configuration.</p>
-              <div class="toolbar">
-                <button type="button" class="btn btn-secondary btn-small" id="exportData">Export backup</button>
-                <label class="btn btn-secondary btn-small import-label" for="importData">Import backup<input type="file" id="importData" accept="application/json" /></label>
-              </div>
+              <p class="account-status">Your routines and profile are stored locally on this device.</p>
             </div>
           </div>
         </section>
@@ -1179,6 +1394,163 @@
             <button type="button" class="btn btn-secondary btn-small" id="disableReminder">Disable</button>
           </div>
           <p class="account-status">Notifications work while this page is open. Browser permission is required.</p>
+        </section>
+
+        <section class="section-box" id="routine">
+          <div class="section-heading">
+            <h2>Strict Daily Routine</h2>
+            <span class="pill">Mandatory</span>
+          </div>
+
+          <div class="rules-layout">
+            <div class="check-list" id="dailyChecklist"></div>
+
+            <aside class="focus-panel">
+              <h3>Discipline must be discipline.</h3>
+              <ul>
+                <li>No porn</li>
+                <li>No masturbation</li>
+                <li>No sugar</li>
+                <li>Daily minimum 3 liters of water</li>
+                <li>At least 1 hour walk daily</li>
+                <li>Minimum 30 minutes workout daily</li>
+                <li>Diet maintain</li>
+                <li>Don't tell a lie</li>
+                <li>Prayer 5 times</li>
+                <li>Try to pray Tahajjud</li>
+                <li>Minimum 2 hours study daily</li>
+                <li>Sleep at least 6 hours</li>
+                <li>Cold shower</li>
+                <li>Screen time not more than 4 hours</li>
+                <li>Cannot be eaten fried food</li>
+              </ul>
+            </aside>
+          </div>
+
+          <div class="custom-routine-box">
+            <div class="section-heading">
+              <h3>Custom routine</h3>
+              <span class="pill">Personal rules</span>
+            </div>
+            <div class="custom-routine-form">
+              <div class="field">
+                <label for="customRuleInput">Add a rule</label>
+                <input type="text" id="customRuleInput" maxlength="80" placeholder="Example: Read 20 pages" />
+              </div>
+              <button type="button" class="btn btn-primary btn-small" id="addCustomRule">Add rule</button>
+              <button type="button" class="btn btn-secondary btn-small" id="resetCustomRules">Reset default</button>
+            </div>
+            <div class="custom-rule-list" id="customRuleList"></div>
+          </div>
+        </section>
+
+        <section class="section-box" id="submit">
+          <div class="section-heading">
+            <h2>Submit Today's Routine</h2>
+            <span class="pill">Progress Tracker</span>
+          </div>
+
+          <form id="routineForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="routineDate">Date</label>
+                <input type="date" id="routineDate" required />
+              </div>
+              <div class="field">
+                <label for="waterInput">Water (liters)</label>
+                <input type="number" id="waterInput" min="0" max="10" step="0.5" value="3" />
+              </div>
+              <div class="field">
+                <label for="sleepInput">Sleep (hours)</label>
+                <input type="number" id="sleepInput" min="0" max="12" step="0.5" value="6" />
+              </div>
+              <div class="field">
+                <label for="moodInput">Mood</label>
+                <select id="moodInput">
+                  <option value="Focused">Focused</option>
+                  <option value="Good">Good</option>
+                  <option value="Okay">Okay</option>
+                  <option value="Low">Low</option>
+                  <option value="Tired">Tired</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-checks" id="formChecklist"></div>
+
+            <div class="field" style="margin-top: 20px;">
+              <label for="dailyNotes">Daily Reflection</label>
+              <textarea id="dailyNotes" placeholder="Write how your day went, what you improved, or what needs attention."></textarea>
+            </div>
+
+            <div class="submit-actions">
+              <button type="submit" class="btn btn-primary">Submit Routine</button>
+              <button type="button" class="btn btn-secondary" id="clearHistory">Clear History</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="section-box" id="history">
+          <div class="section-heading">
+            <h2>Progress Overview</h2>
+            <span class="pill">Daily Summary</span>
+          </div>
+
+          <div class="progress-layout">
+            <div class="progress-card">
+              <h3>Today's Completion</h3>
+              <div class="ring-wrap">
+                <svg viewBox="0 0 160 160" aria-label="Progress ring">
+                  <defs>
+                    <linearGradient id="progressGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                      <stop offset="0%" stop-color="#7ee0ff" />
+                      <stop offset="100%" stop-color="#9dffb5" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="ring-bg" cx="80" cy="80" r="70"></circle>
+                  <circle class="ring-progress" id="progressRing" cx="80" cy="80" r="70"></circle>
+                </svg>
+                <div class="ring-center">
+                  <div>
+                    <strong id="percentText">0%</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="progress-card">
+              <div class="history-title-row">
+                <h3>Submission History</h3>
+                <button type="button" class="btn btn-secondary btn-small" id="shareProgress">Share progress</button>
+              </div>
+              <div class="recovery-panel" id="recoveryPanel"></div>
+              <ul class="history-list" id="historyList"></ul>
+            </div>
+          </div>
+
+          <div class="discipline-analytics">
+            <div class="analytics-heading">
+              <div>
+                <h3>Day-by-day Discipline Graph</h3>
+                <p>Bright cells show the disciplines completed on each submitted day.</p>
+              </div>
+              <span class="pill" id="graphStatus">No data yet</span>
+            </div>
+            <div class="graph-scroll">
+              <div class="discipline-graph" id="disciplineGraph"></div>
+            </div>
+            <div class="analytics-summary">
+              <div class="summary-block improving">
+                <h4>Improving today</h4>
+                <ul class="summary-list" id="improvingList"></ul>
+              </div>
+              <div class="summary-block focus">
+                <h4>Needs more focus</h4>
+                <ul class="summary-list" id="focusList"></ul>
+              </div>
+            </div>
+          </div>
+          <canvas id="shareCanvas" width="1200" height="630" hidden></canvas>
         </section>
 
         <section class="section-box" id="discipline">
@@ -1240,137 +1612,17 @@
             </div>
           </div>
         </section>
-
-        <section class="section-box" id="routine">
-          <div class="section-heading">
-            <h2>Strict Daily Routine</h2>
-            <span class="pill">Mandatory</span>
-          </div>
-
-          <div class="rules-layout">
-            <div class="check-list" id="dailyChecklist"></div>
-
-            <aside class="focus-panel">
-              <h3>Discipline must be discipline.</h3>
-              <ul>
-                <li>No porn</li>
-                <li>No masturbation</li>
-                <li>No sugar</li>
-                <li>Daily minimum 3 liters of water</li>
-                <li>At least 1 hour walk daily</li>
-                <li>Minimum 30 minutes workout daily</li>
-                <li>Diet maintain</li>
-                <li>Don't tell a lie</li>
-                <li>Prayer 5 times</li>
-                <li>Try to pray Tahajjud</li>
-                <li>Minimum 2 hours study daily</li>
-                <li>Sleep at least 6 hours</li>
-                <li>Cold shower</li>
-                <li>Screen time not more than 4 hours</li>
-                <li>Cannot be eaten fried food</li>
-              </ul>
-            </aside>
-          </div>
-        </section>
-
-        <section class="section-box" id="submit">
-          <div class="section-heading">
-            <h2>Submit Today's Routine</h2>
-            <span class="pill">Progress Tracker</span>
-          </div>
-
-          <form id="routineForm">
-            <div class="form-grid">
-              <div class="field">
-                <label for="routineDate">Date</label>
-                <input type="date" id="routineDate" required />
-              </div>
-              <div class="field">
-                <label for="waterInput">Water (liters)</label>
-                <input type="number" id="waterInput" min="0" max="10" step="0.5" value="3" />
-              </div>
-              <div class="field">
-                <label for="sleepInput">Sleep (hours)</label>
-                <input type="number" id="sleepInput" min="0" max="12" step="0.5" value="6" />
-              </div>
-            </div>
-
-            <div class="form-checks" id="formChecklist"></div>
-
-            <div class="field" style="margin-top: 20px;">
-              <label for="dailyNotes">Daily Reflection</label>
-              <textarea id="dailyNotes" placeholder="Write how your day went, what you improved, or what needs attention."></textarea>
-            </div>
-
-            <div class="submit-actions">
-              <button type="submit" class="btn btn-primary">Submit Routine</button>
-              <button type="button" class="btn btn-secondary" id="clearHistory">Clear History</button>
-            </div>
-          </form>
-        </section>
-
-        <section class="section-box" id="history">
-          <div class="section-heading">
-            <h2>Progress Overview</h2>
-            <span class="pill">Daily Summary</span>
-          </div>
-
-          <div class="progress-layout">
-            <div class="progress-card">
-              <h3>Today's Completion</h3>
-              <div class="ring-wrap">
-                <svg viewBox="0 0 160 160" aria-label="Progress ring">
-                  <defs>
-                    <linearGradient id="progressGradient" x1="0%" x2="100%" y1="0%" y2="100%">
-                      <stop offset="0%" stop-color="#7ee0ff" />
-                      <stop offset="100%" stop-color="#9dffb5" />
-                    </linearGradient>
-                  </defs>
-                  <circle class="ring-bg" cx="80" cy="80" r="70"></circle>
-                  <circle class="ring-progress" id="progressRing" cx="80" cy="80" r="70"></circle>
-                </svg>
-                <div class="ring-center">
-                  <div>
-                    <strong id="percentText">0%</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="progress-card">
-              <h3>Submission History</h3>
-              <ul class="history-list" id="historyList"></ul>
-            </div>
-          </div>
-
-          <div class="discipline-analytics">
-            <div class="analytics-heading">
-              <div>
-                <h3>Day-by-day Discipline Graph</h3>
-                <p>Bright cells show the disciplines completed on each submitted day.</p>
-              </div>
-              <span class="pill" id="graphStatus">No data yet</span>
-            </div>
-            <div class="graph-scroll">
-              <div class="discipline-graph" id="disciplineGraph"></div>
-            </div>
-            <div class="analytics-summary">
-              <div class="summary-block improving">
-                <h4>Improving today</h4>
-                <ul class="summary-list" id="improvingList"></ul>
-              </div>
-              <div class="summary-block focus">
-                <h4>Needs more focus</h4>
-                <ul class="summary-list" id="focusList"></ul>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
+      <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+        <a href="#submit"><span class="mobile-nav-icon">+</span><span>Log</span></a>
+        <a href="#routine"><span class="mobile-nav-icon">&#10003;</span><span>Routine</span></a>
+        <a href="#history"><span class="mobile-nav-icon">&#9733;</span><span>Progress</span></a>
+        <a href="#calendar"><span class="mobile-nav-icon">&#9638;</span><span>Calendar</span></a>
+      </nav>
     </div>
 
     <script>
-      const rules = [
+      const DEFAULT_RULES = [
         'No porn',
         'No masturbation',
         'No sugar',
@@ -1388,6 +1640,8 @@
         'Cannot be eaten fried food'
       ];
 
+      let rules = [...DEFAULT_RULES];
+
       const dailyChecklist = document.getElementById('dailyChecklist');
       const formChecklist = document.getElementById('formChecklist');
       const routineForm = document.getElementById('routineForm');
@@ -1397,6 +1651,7 @@
       const routineDate = document.getElementById('routineDate');
       const waterInput = document.getElementById('waterInput');
       const sleepInput = document.getElementById('sleepInput');
+      const moodInput = document.getElementById('moodInput');
       const clearHistoryBtn = document.getElementById('clearHistory');
       const disciplineGraph = document.getElementById('disciplineGraph');
       const graphStatus = document.getElementById('graphStatus');
@@ -1416,15 +1671,85 @@
       const digitalClock = document.getElementById('digitalClock');
       const digitalDate = document.getElementById('digitalDate');
       const digitalZone = document.getElementById('digitalZone');
+      const shareCanvas = document.getElementById('shareCanvas');
+      const installAppButton = document.getElementById('installApp');
+      const weeklyReview = document.getElementById('weeklyReview');
+      const recoveryPanel = document.getElementById('recoveryPanel');
+      const calendarGrid = document.getElementById('calendarGrid');
+      const calendarMonthLabel = document.getElementById('calendarMonthLabel');
+      const badgeGrid = document.getElementById('badgeGrid');
+      const customRuleInput = document.getElementById('customRuleInput');
+      const customRuleList = document.getElementById('customRuleList');
 
       const STORAGE_KEY = 'disciplineChallengeEntries';
       const PROFILE_KEY = 'disciplineChallengeProfile';
       const REMINDER_KEY = 'disciplineChallengeReminder';
+      const CUSTOM_RULES_KEY = 'disciplineChallengeCustomRules';
+      const RECOVERY_KEY = 'disciplineChallengeRecoveryDays';
       const radius = 70;
       const circumference = 2 * Math.PI * radius;
       let editingDate = null;
       let reminderTimer = null;
+      let calendarDate = new Date();
+      let installPrompt = null;
       progressRing.style.strokeDasharray = String(circumference);
+
+      function getCustomRules() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(CUSTOM_RULES_KEY) || '[]');
+          return Array.isArray(stored) ? stored.filter((rule) => typeof rule === 'string' && rule.trim()) : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function loadRules() {
+        rules = [...DEFAULT_RULES, ...getCustomRules()];
+      }
+
+      function attachFormCheckboxListeners() {
+        document.querySelectorAll('#formChecklist input[type="checkbox"]').forEach((checkbox) => {
+          checkbox.addEventListener('change', updateProgressFromForm);
+        });
+      }
+
+      function saveCustomRules(customRules) {
+        localStorage.setItem(CUSTOM_RULES_KEY, JSON.stringify(customRules));
+        loadRules();
+        renderChecklistTarget(dailyChecklist);
+        renderChecklistTarget(formChecklist);
+        renderCustomRules();
+        renderDisciplineGraph();
+        attachFormCheckboxListeners();
+      }
+
+      function renderCustomRules() {
+        const customRules = getCustomRules();
+        customRuleList.innerHTML = '';
+        if (!customRules.length) {
+          customRuleList.innerHTML = '<div class="empty">No custom rules yet. Your default routine is active.</div>';
+          return;
+        }
+
+        customRules.forEach((rule, index) => {
+          const item = document.createElement('div');
+          item.className = 'custom-rule-item';
+          const text = document.createElement('span');
+          text.textContent = rule;
+          const remove = document.createElement('button');
+          remove.type = 'button';
+          remove.className = 'remove-rule';
+          remove.textContent = 'Remove';
+          remove.addEventListener('click', () => {
+            const nextRules = getCustomRules();
+            nextRules.splice(index, 1);
+            saveCustomRules(nextRules);
+          });
+          item.appendChild(text);
+          item.appendChild(remove);
+          customRuleList.appendChild(item);
+        });
+      }
 
       function renderChecklistTarget(container) {
         container.innerHTML = '';
@@ -1483,6 +1808,62 @@
         digitalZone.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local timezone';
       }
 
+      function shareProgressCard() {
+        const entries = getEntries().filter((entry) => entry.date).sort((first, second) => second.date.localeCompare(first.date));
+        const recent = entries.slice(0, 7);
+        const average = recent.length ? Math.round(recent.reduce((total, entry) => total + Number(entry.percent || 0), 0) / recent.length) : 0;
+        const streak = document.getElementById('currentStreak').textContent;
+        const profile = localStorage.getItem(PROFILE_KEY) || 'Discipline challenger';
+        const context = shareCanvas.getContext('2d');
+        const gradient = context.createLinearGradient(0, 0, 1200, 630);
+        gradient.addColorStop(0, '#071b2a');
+        gradient.addColorStop(1, '#102f42');
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 1200, 630);
+        context.fillStyle = 'rgba(122, 217, 255, 0.14)';
+        context.beginPath();
+        context.arc(1010, 80, 240, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = '#7ad9ff';
+        context.font = '700 28px Segoe UI, Arial';
+        context.fillText('DISCIPLINE / 365', 72, 86);
+        context.fillStyle = '#edf7ff';
+        context.font = '700 58px Segoe UI, Arial';
+        context.fillText(`${profile}'s progress`, 72, 180);
+        context.fillStyle = '#9fbac9';
+        context.font = '400 26px Segoe UI, Arial';
+        context.fillText('Small actions. Stronger days.', 76, 228);
+        context.fillStyle = '#edf7ff';
+        context.font = '700 72px Courier New, monospace';
+        context.fillText(`${average}%`, 76, 380);
+        context.font = '400 22px Segoe UI, Arial';
+        context.fillStyle = '#9fbac9';
+        context.fillText('recent average', 82, 422);
+        context.fillStyle = '#9cf7c5';
+        context.font = '700 42px Segoe UI, Arial';
+        context.fillText(streak, 500, 380);
+        context.font = '400 22px Segoe UI, Arial';
+        context.fillStyle = '#9fbac9';
+        context.fillText('current streak', 506, 422);
+        context.fillStyle = '#7ad9ff';
+        context.font = '400 20px Segoe UI, Arial';
+        context.fillText(`${entries.length} tracked day${entries.length === 1 ? '' : 's'}`, 76, 550);
+
+        shareCanvas.toBlob((blob) => {
+          if (!blob) return;
+          const file = new File([blob], 'discipline-progress.png', { type: 'image/png' });
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ title: 'My discipline progress', files: [file] }).catch(() => {});
+            return;
+          }
+          const link = document.createElement('a');
+          link.download = 'discipline-progress.png';
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        }, 'image/png');
+      }
+
       function saveEntries(entries) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
       }
@@ -1498,6 +1879,25 @@
         }
       }
 
+      function getRecoveryDates() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(RECOVERY_KEY) || '[]');
+          return Array.isArray(stored) ? stored.filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date)) : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveRecoveryDates(dates) {
+        localStorage.setItem(RECOVERY_KEY, JSON.stringify([...new Set(dates)]));
+      }
+
+      function addDays(dateKey, amount) {
+        const date = new Date(dateKey + 'T00:00:00');
+        date.setDate(date.getDate() + amount);
+        return getLocalDateKey(date);
+      }
+
       function editEntry(date) {
         const entry = getEntries().find((item) => item.date === date);
         if (!entry) return;
@@ -1506,6 +1906,7 @@
         routineDate.value = entry.date;
         waterInput.value = entry.water;
         sleepInput.value = entry.sleep;
+        moodInput.value = entry.mood || 'Focused';
         document.getElementById('dailyNotes').value = entry.notes || '';
         document.querySelectorAll('#formChecklist input[type="checkbox"]').forEach((checkbox, index) => {
           checkbox.checked = entry.checked.includes(String(index));
@@ -1547,7 +1948,7 @@
 
           const meta = document.createElement('div');
           meta.className = 'history-meta';
-          meta.innerHTML = `Water: ${entry.water}L · Sleep: ${entry.sleep}h · Completed: ${entry.completed}/${entry.total} rules`;
+          meta.innerHTML = `Water: ${entry.water}L · Sleep: ${entry.sleep}h · Mood: ${entry.mood || 'Not recorded'} · Completed: ${entry.completed}/${entry.total} rules`;
 
           const notes = document.createElement('div');
           notes.className = 'history-meta';
@@ -1592,7 +1993,8 @@
           return;
         }
 
-        const uniqueDates = [...new Set(entries.map((entry) => entry.date))];
+        const uniqueDates = [...new Set([...entries.map((entry) => entry.date), ...getRecoveryDates()])]
+          .sort((first, second) => second.localeCompare(first));
         const today = new Date();
         const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
           .toISOString()
@@ -1616,6 +2018,39 @@
         averageElement.textContent = average + '%';
       }
 
+      function renderRecoveryPanel() {
+        const entries = getEntries().filter((entry) => entry.date).sort((first, second) => first.date.localeCompare(second.date));
+        const recoveryDates = getRecoveryDates();
+        if (!entries.length) {
+          recoveryPanel.textContent = 'Submit a few routines first. A recovery day will appear here after a missed day.';
+          return;
+        }
+
+        const latestDate = entries[entries.length - 1].date;
+        const candidate = addDays(latestDate, 1);
+        const today = getLocalDateKey(new Date());
+        if (candidate >= today || recoveryDates.includes(candidate)) {
+          recoveryPanel.textContent = recoveryDates.includes(candidate)
+            ? `Recovery day used for ${candidate}. Keep going with your next routine.`
+            : 'No recovery day needed right now. Your next routine keeps the momentum going.';
+          return;
+        }
+
+        recoveryPanel.innerHTML = `Missed day detected on <strong>${candidate}</strong>. You can use one recovery day to protect your momentum.`;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-secondary btn-small';
+        button.textContent = 'Use recovery day';
+        button.addEventListener('click', () => {
+          saveRecoveryDates([...recoveryDates, candidate]);
+          renderRecoveryPanel();
+          renderMetrics();
+          renderCalendar();
+          renderBadges();
+        });
+        recoveryPanel.appendChild(button);
+      }
+
       function deleteEntry(date) {
         const confirmed = window.confirm('Delete the routine submitted on ' + date + '?');
         if (!confirmed) return;
@@ -1625,6 +2060,92 @@
         renderHistory();
         renderDisciplineGraph();
         renderMetrics();
+        renderCalendar();
+        renderBadges();
+      }
+
+      function getLocalDateKey(date) {
+        const offset = date.getTimezoneOffset();
+        return new Date(date.getTime() - offset * 60000).toISOString().split('T')[0];
+      }
+
+      function renderCalendar() {
+        const entries = new Map(getEntries().map((entry) => [entry.date, entry]));
+        const recoveryDates = new Set(getRecoveryDates());
+        const year = calendarDate.getFullYear();
+        const month = calendarDate.getMonth();
+        const monthName = calendarDate.toLocaleDateString([], { month: 'long', year: 'numeric' });
+        calendarMonthLabel.textContent = monthName;
+        calendarGrid.innerHTML = '';
+
+        ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach((day) => {
+          const heading = document.createElement('div');
+          heading.className = 'calendar-heading';
+          heading.textContent = day;
+          calendarGrid.appendChild(heading);
+        });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const todayKey = getLocalDateKey(new Date());
+        for (let blank = 0; blank < firstDay; blank += 1) {
+          calendarGrid.appendChild(document.createElement('div'));
+        }
+
+        for (let day = 1; day <= daysInMonth; day += 1) {
+          const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const dayCell = document.createElement('button');
+          dayCell.type = 'button';
+          dayCell.className = 'calendar-day';
+          if (dateKey === todayKey) dayCell.classList.add('today');
+          const entry = entries.get(dateKey);
+          if (entry) dayCell.classList.add('done');
+          if (!entry && recoveryDates.has(dateKey)) dayCell.classList.add('recovery');
+          dayCell.textContent = day;
+          dayCell.title = entry ? `${dateKey}: ${entry.percent}% complete` : recoveryDates.has(dateKey) ? `${dateKey}: Recovery day` : `${dateKey}: No submission`;
+          if (entry) {
+            const score = document.createElement('span');
+            score.className = 'calendar-score';
+            score.textContent = `${entry.percent}%`;
+            dayCell.appendChild(score);
+          }
+          dayCell.addEventListener('click', () => {
+            routineDate.value = dateKey;
+            document.getElementById('submit').scrollIntoView({ behavior: 'smooth' });
+          });
+          calendarGrid.appendChild(dayCell);
+        }
+      }
+
+      function renderBadges() {
+        const entries = getEntries().filter((entry) => entry.date).sort((first, second) => first.date.localeCompare(second.date));
+        const uniqueDates = [...new Set(entries.map((entry) => entry.date))];
+        const dateSet = new Set(uniqueDates);
+        let longestStreak = 0;
+        let runningStreak = 0;
+        uniqueDates.forEach((date, index) => {
+          const previous = uniqueDates[index - 1];
+          if (previous && Math.round((new Date(date) - new Date(previous)) / 86400000) === 1) runningStreak += 1;
+          else runningStreak = 1;
+          longestStreak = Math.max(longestStreak, runningStreak);
+        });
+
+        const badges = [
+          { icon: '🌱', title: 'First Step', detail: 'Submit your first routine', unlocked: uniqueDates.length >= 1 },
+          { icon: '🔥', title: '7 Day Streak', detail: 'Keep a seven-day streak', unlocked: longestStreak >= 7 },
+          { icon: '⚡', title: '30 Day Streak', detail: 'Keep a thirty-day streak', unlocked: longestStreak >= 30 },
+          { icon: '🏆', title: 'Perfect Day', detail: 'Complete every rule in one day', unlocked: entries.some((entry) => entry.percent === 100) },
+          { icon: '📅', title: 'Consistency', detail: 'Track ten different days', unlocked: uniqueDates.length >= 10 },
+          { icon: '💧', title: 'Hydrated', detail: 'Record 3L or more of water', unlocked: entries.some((entry) => Number(entry.water) >= 3) },
+          { icon: '🌙', title: 'Rested', detail: 'Record 6h or more of sleep', unlocked: entries.some((entry) => Number(entry.sleep) >= 6) },
+          { icon: '🧭', title: 'Long Game', detail: 'Track thirty different days', unlocked: dateSet.size >= 30 }
+        ];
+        badgeGrid.innerHTML = badges.map((badge) => `
+          <div class="badge-card${badge.unlocked ? ' unlocked' : ''}">
+            <div class="badge-icon">${badge.icon}</div>
+            <strong>${badge.title}</strong>
+            <span>${badge.unlocked ? 'Unlocked' : badge.detail}</span>
+          </div>`).join('');
       }
 
       function renderDisciplineGraph() {
@@ -1732,6 +2253,7 @@
           periodSleep.textContent = '0h';
           analyticsChart.innerHTML = '<span class="account-status">Submit routines to see your trend.</span>';
           renderRuleReport(selected, period);
+          renderWeeklyReview();
           return;
         }
 
@@ -1751,6 +2273,26 @@
           analyticsChart.appendChild(bar);
         });
         renderRuleReport(selected, period);
+        renderWeeklyReview();
+      }
+
+      function renderWeeklyReview() {
+        const entries = getEntries().slice().sort((first, second) => first.date.localeCompare(second.date)).slice(-7);
+        if (!entries.length) {
+          weeklyReview.innerHTML = '<strong>Weekly review:</strong> Submit your first routine to receive a focused review.';
+          return;
+        }
+
+        const average = Math.round(entries.reduce((total, entry) => total + Number(entry.percent || 0), 0) / entries.length);
+        const best = entries.reduce((current, entry) => Number(entry.percent) > Number(current.percent) ? entry : current, entries[0]);
+        const moodCounts = entries.reduce((counts, entry) => {
+          const mood = entry.mood || 'Not recorded';
+          counts[mood] = (counts[mood] || 0) + 1;
+          return counts;
+        }, {});
+        const strongestMood = Object.keys(moodCounts).sort((first, second) => moodCounts[second] - moodCounts[first])[0];
+        const advice = average >= 80 ? 'Strong week. Protect the habits that are already working.' : average >= 50 ? 'Solid base. Choose two rules to improve next week.' : 'Reset gently. Start with the smallest rule you can complete today.';
+        weeklyReview.innerHTML = `<strong>Weekly review:</strong> ${entries.length} day${entries.length === 1 ? '' : 's'} tracked, average completion <strong>${average}%</strong>, best score <strong>${best.percent}%</strong>. Most common mood: <strong>${strongestMood}</strong>. ${advice}`;
       }
 
       function handleSubmit(event) {
@@ -1765,6 +2307,7 @@
           date: routineDate.value || new Date().toISOString().split('T')[0],
           water: Number(waterInput.value) || 0,
           sleep: Number(sleepInput.value) || 0,
+          mood: moodInput.value,
           total,
           completed,
           percent,
@@ -1797,6 +2340,9 @@
         renderDisciplineGraph();
         renderMetrics();
         renderAnalytics();
+        renderCalendar();
+        renderBadges();
+        renderRecoveryPanel();
         editingDate = null;
         routineForm.querySelector('button[type="submit"]').textContent = 'Submit Routine';
 
@@ -1822,10 +2368,14 @@
 
       function clearHistory() {
         localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(RECOVERY_KEY);
         renderHistory();
         renderDisciplineGraph();
         renderMetrics();
         renderAnalytics();
+        renderCalendar();
+        renderBadges();
+        renderRecoveryPanel();
         percentText.textContent = '0%';
         progressRing.style.strokeDashoffset = String(circumference);
       }
@@ -1842,15 +2392,20 @@
         const backup = {
           version: 1,
           exportedAt: new Date().toISOString(),
+          entries: getEntries(),
           profile: localStorage.getItem(PROFILE_KEY) || '',
-          entries: getEntries()
+          reminder: localStorage.getItem(REMINDER_KEY) ? JSON.parse(localStorage.getItem(REMINDER_KEY)) : null,
+          customRules: getCustomRules(),
+          recoveryDates: getRecoveryDates()
         };
         const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'discipline-backup.json';
+        link.href = url;
+        link.download = `discipline-backup-${getLocalDateKey(new Date())}.json`;
         link.click();
-        URL.revokeObjectURL(link.href);
+        URL.revokeObjectURL(url);
+        syncStatus.textContent = 'Exported';
       }
 
       function importBackup(event) {
@@ -1860,21 +2415,35 @@
         reader.onload = () => {
           try {
             const backup = JSON.parse(reader.result);
-            if (!Array.isArray(backup.entries)) throw new Error('Invalid backup');
-            saveEntries(backup.entries);
-            if (backup.profile) localStorage.setItem(PROFILE_KEY, backup.profile);
-            loadProfile();
+            if (!backup || !Array.isArray(backup.entries)) throw new Error('Invalid backup');
+            saveEntries(backup.entries.filter((entry) => entry && entry.date && Array.isArray(entry.checked)));
+            if (typeof backup.profile === 'string') localStorage.setItem(PROFILE_KEY, backup.profile);
+            if (Array.isArray(backup.customRules)) localStorage.setItem(CUSTOM_RULES_KEY, JSON.stringify(backup.customRules.filter((rule) => typeof rule === 'string' && rule.trim())));
+            if (Array.isArray(backup.recoveryDates)) saveRecoveryDates(backup.recoveryDates);
+            if (backup.reminder && backup.reminder.enabled && backup.reminder.time) localStorage.setItem(REMINDER_KEY, JSON.stringify(backup.reminder));
+            else localStorage.removeItem(REMINDER_KEY);
+            loadRules();
+            renderChecklistTarget(dailyChecklist);
+            renderChecklistTarget(formChecklist);
+            attachFormCheckboxListeners();
+            renderCustomRules();
             renderHistory();
             renderDisciplineGraph();
             renderMetrics();
             renderAnalytics();
+            renderCalendar();
+            renderBadges();
+            renderRecoveryPanel();
+            loadProfile();
+            updateReminder();
+            syncStatus.textContent = 'Imported';
             accountStatus.textContent = 'Backup imported successfully on this device.';
           } catch (error) {
-            accountStatus.textContent = 'Could not import this backup file.';
+            syncStatus.textContent = 'Invalid backup';
           }
+          event.target.value = '';
         };
         reader.readAsText(file);
-        event.target.value = '';
       }
 
       function updateReminder() {
@@ -1908,22 +2477,25 @@
         updateReminder();
       }
 
+      loadRules();
       renderChecklistTarget(dailyChecklist);
       renderChecklistTarget(formChecklist);
+      renderCustomRules();
       setDefaultDate();
       renderHistory();
       renderDisciplineGraph();
       renderMetrics();
       renderAnalytics();
+      renderCalendar();
+      renderBadges();
+      renderRecoveryPanel();
       loadProfile();
       updateReminder();
       updateDigitalClock();
       setInterval(updateDigitalClock, 1000);
       updateProgressFromForm();
 
-      document.querySelectorAll('#formChecklist input[type="checkbox"]').forEach((checkbox) => {
-        checkbox.addEventListener('change', updateProgressFromForm);
-      });
+      attachFormCheckboxListeners();
 
       routineForm.addEventListener('submit', handleSubmit);
       clearHistoryBtn.addEventListener('click', clearHistory);
@@ -1935,8 +2507,6 @@
         localStorage.setItem(PROFILE_KEY, name);
         accountStatus.textContent = `Signed in locally as ${name}.`;
       });
-      document.getElementById('exportData').addEventListener('click', exportBackup);
-      document.getElementById('importData').addEventListener('change', importBackup);
       document.getElementById('syncData').addEventListener('click', () => {
         syncStatus.textContent = 'Local only';
         accountStatus.textContent = 'Local data is ready. Add a backend endpoint for real cloud sync.';
@@ -1946,6 +2516,46 @@
         localStorage.removeItem(REMINDER_KEY);
         updateReminder();
       });
+      document.getElementById('previousMonth').addEventListener('click', () => {
+        calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() - 1, 1);
+        renderCalendar();
+      });
+      document.getElementById('nextMonth').addEventListener('click', () => {
+        calendarDate = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 1);
+        renderCalendar();
+      });
+      document.getElementById('addCustomRule').addEventListener('click', () => {
+        const newRule = customRuleInput.value.trim();
+        if (!newRule) return;
+        const customRules = getCustomRules();
+        if (!customRules.some((rule) => rule.toLowerCase() === newRule.toLowerCase())) {
+          customRules.push(newRule);
+          saveCustomRules(customRules);
+        }
+        customRuleInput.value = '';
+      });
+      document.getElementById('resetCustomRules').addEventListener('click', () => {
+        if (!window.confirm('Remove all custom rules and restore the default routine?')) return;
+        saveCustomRules([]);
+      });
+      document.getElementById('exportData').addEventListener('click', exportBackup);
+      document.getElementById('importData').addEventListener('change', importBackup);
+      document.getElementById('shareProgress').addEventListener('click', shareProgressCard);
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        installPrompt = event;
+        installAppButton.hidden = false;
+      });
+      installAppButton.addEventListener('click', async () => {
+        if (!installPrompt) return;
+        installPrompt.prompt();
+        await installPrompt.userChoice;
+        installPrompt = null;
+        installAppButton.hidden = true;
+      });
+      if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
     </script>
   </body>
 </html>
