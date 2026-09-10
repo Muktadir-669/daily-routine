@@ -999,6 +999,338 @@
 
       .mobile-bottom-nav { display: none; }
 
+      /* Social Features Styles */
+      .leaderboard-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .leaderboard-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012));
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .leaderboard-card::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(118, 217, 255, 0.7), transparent);
+      }
+
+      .leaderboard-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(122, 217, 255, 0.34);
+      }
+
+      .rank-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(122, 217, 255, 0.2), rgba(156, 247, 197, 0.1));
+        border: 2px solid rgba(122, 217, 255, 0.3);
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+      }
+
+      .rank-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+
+      .rank-score {
+        font-size: 0.88rem;
+        color: var(--secondary);
+        margin-bottom: 8px;
+      }
+
+      .rank-meta {
+        font-size: 0.75rem;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .challenge-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 20px;
+        background: linear-gradient(135deg, rgba(122, 217, 255, 0.06), rgba(156, 247, 197, 0.04));
+        margin-bottom: 14px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .challenge-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(122, 217, 255, 0.28);
+      }
+
+      .challenge-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 12px;
+      }
+
+      .challenge-title {
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .challenge-status {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: rgba(122, 217, 255, 0.1);
+        color: var(--primary);
+      }
+
+      .challenge-status.completed {
+        background: rgba(156, 247, 197, 0.1);
+        color: var(--secondary);
+      }
+
+      .challenge-meta {
+        font-size: 0.88rem;
+        color: var(--muted);
+        margin-bottom: 12px;
+        line-height: 1.5;
+      }
+
+      .challenge-progress {
+        height: 8px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+
+      .challenge-progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 4px;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .challenge-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .community-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .community-card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        background: rgba(255,255,255,0.015);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .community-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(122, 217, 255, 0.28);
+      }
+
+      .community-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .community-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, rgba(122, 217, 255, 0.2), rgba(156, 247, 197, 0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+
+      .community-name {
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .community-members {
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+
+      .community-desc {
+        font-size: 0.85rem;
+        color: var(--muted);
+        margin-bottom: 10px;
+        line-height: 1.4;
+      }
+
+      .social-share-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin: 20px 0;
+      }
+
+      .social-share-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.02);
+        color: var(--text);
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .social-share-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(122, 217, 255, 0.1);
+        border-color: rgba(122, 217, 255, 0.28);
+      }
+
+      .social-icon {
+        font-size: 1.2rem;
+      }
+
+      .friend-input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .friend-input-group .field {
+        flex: 1;
+        margin: 0;
+      }
+
+      .friend-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .friend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.015);
+      }
+
+      .friend-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .friend-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(122, 217, 255, 0.2), rgba(156, 247, 197, 0.1));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .friend-details {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .friend-name {
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .friend-score {
+        font-size: 0.8rem;
+        color: var(--secondary);
+      }
+
+      .friend-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .friend-action-btn {
+        padding: 6px 12px;
+        border: 1px solid rgba(122, 217, 255, 0.25);
+        border-radius: 8px;
+        background: rgba(122, 217, 255, 0.08);
+        color: var(--primary);
+        cursor: pointer;
+        font-size: 0.75rem;
+        transition: all 0.2s ease;
+      }
+
+      .friend-action-btn:hover {
+        background: rgba(122, 217, 255, 0.15);
+      }
+
+      .social-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 12px;
+      }
+
+      .social-tab {
+        padding: 10px 16px;
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        font-weight: 600;
+        transition: color 0.2s ease, border-color 0.2s ease;
+        border-bottom: 2px solid transparent;
+      }
+
+      .social-tab.active {
+        color: var(--text);
+        border-bottom-color: var(--primary);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
       .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -1140,6 +1472,86 @@
 
       .reminder-row .field { min-width: 180px; }
 
+      .footer {
+        margin-top: 60px;
+        padding: 40px 28px;
+        border-top: 1px solid rgba(167, 210, 232, 0.12);
+        background: linear-gradient(180deg, rgba(11, 22, 30, 0.5), rgba(9, 17, 24, 0.5));
+        backdrop-filter: blur(8px);
+        border-radius: 24px;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .footer-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text);
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .contact-links {
+        display: flex;
+        gap: 24px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .contact-link {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(122, 217, 255, 0.045));
+        border: 1px solid rgba(210, 240, 255, 0.24);
+        box-shadow:
+          0 14px 32px rgba(1, 7, 12, 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.18),
+          inset 0 -1px 0 rgba(122, 217, 255, 0.08);
+        backdrop-filter: blur(16px) saturate(135%);
+        -webkit-backdrop-filter: blur(16px) saturate(135%);
+        color: var(--primary);
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .contact-link:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(122, 217, 255, 0.1));
+        border-color: rgba(210, 240, 255, 0.42);
+        box-shadow:
+          0 18px 38px rgba(1, 7, 12, 0.36),
+          0 0 24px rgba(122, 217, 255, 0.12),
+          inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        color: var(--text);
+      }
+
+      .contact-link:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+      }
+
+      .contact-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        font-size: 1.2rem;
+      }
+
       @media (max-width: 900px) {
         .hero, .rules-layout, .progress-layout { grid-template-columns: 1fr; }
         .stats-grid, .discipline-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1239,6 +1651,7 @@
           <a href="#history"><span class="nav-index">04</span><span class="nav-title">History</span><span class="nav-note">Your record</span></a>
           <a href="#analytics"><span class="nav-index">05</span><span class="nav-title">Analytics</span><span class="nav-note">See progress</span></a>
           <a href="#calendar"><span class="nav-index">06</span><span class="nav-title">Calendar</span><span class="nav-note">Badges</span></a>
+          <a href="#social"><span class="nav-index">07</span><span class="nav-title">Social</span><span class="nav-note">Community</span></a>
         </nav>
       </header>
 
@@ -1613,6 +2026,142 @@
           </div>
         </section>
       </main>
+
+      <!-- Social Features Section -->
+      <section class="section-box" id="social">
+        <div class="section-heading">
+          <h2>Social & Community</h2>
+          <span class="pill">Connect & Compete</span>
+        </div>
+
+        <div class="social-tabs">
+          <button type="button" class="social-tab active" data-tab="leaderboard">🏆 Leaderboard</button>
+          <button type="button" class="social-tab" data-tab="challenges">⚔️ Challenges</button>
+          <button type="button" class="social-tab" data-tab="share">📤 Share</button>
+          <button type="button" class="social-tab" data-tab="community">👥 Community</button>
+        </div>
+
+        <!-- Leaderboard Tab -->
+        <div id="leaderboard" class="tab-content active">
+          <div class="section-heading">
+            <h3>Global Leaderboard</h3>
+            <button type="button" class="btn btn-secondary btn-small" id="refreshLeaderboard">Refresh</button>
+          </div>
+          <div class="leaderboard-grid" id="leaderboardList"></div>
+        </div>
+
+        <!-- Challenges Tab -->
+        <div id="challenges" class="tab-content">
+          <div class="section-heading">
+            <h3>Friend Challenges</h3>
+            <span class="pill" id="activeChallengeCount">0 active</span>
+          </div>
+
+          <div class="friend-input-group">
+            <div class="field">
+              <label for="friendInput">Add friend by name or ID</label>
+              <input type="text" id="friendInput" placeholder="Enter friend name or ID" />
+            </div>
+            <button type="button" class="btn btn-primary btn-small" id="addFriendBtn" style="align-self: flex-end;">Add Friend</button>
+          </div>
+
+          <h4 style="color: var(--muted); font-size: 0.9rem; margin: 20px 0 12px; text-transform: uppercase;">Your Friends</h4>
+          <div class="friend-list" id="friendsList"></div>
+
+          <h4 style="color: var(--muted); font-size: 0.9rem; margin: 24px 0 12px; text-transform: uppercase;">Active Challenges</h4>
+          <div id="activeChallengesList"></div>
+        </div>
+
+        <!-- Share Tab -->
+        <div id="share" class="tab-content">
+          <div class="section-heading">
+            <h3>Share Your Progress</h3>
+          </div>
+          <p style="color: var(--muted); margin-bottom: 16px;">Share your discipline journey on social media and inspire others to join the challenge.</p>
+          
+          <div class="social-share-grid">
+            <button type="button" class="social-share-btn" id="shareWhatsApp" title="Share on WhatsApp">
+              <span class="social-icon">💬</span>
+              <span>WhatsApp</span>
+            </button>
+            <button type="button" class="social-share-btn" id="shareTwitter" title="Share on Twitter">
+              <span class="social-icon">𝕏</span>
+              <span>Twitter</span>
+            </button>
+            <button type="button" class="social-share-btn" id="shareFacebook" title="Share on Facebook">
+              <span class="social-icon">f</span>
+              <span>Facebook</span>
+            </button>
+            <button type="button" class="social-share-btn" id="shareLinkedIn" title="Share on LinkedIn">
+              <span class="social-icon">in</span>
+              <span>LinkedIn</span>
+            </button>
+          </div>
+
+          <div class="section-heading" style="margin-top: 24px;">
+            <h4>Share Settings</h4>
+          </div>
+          <div style="display: grid; gap: 12px;">
+            <div class="check-item">
+              <input type="checkbox" id="shareStreak" checked />
+              <label for="shareStreak">Include current streak</label>
+            </div>
+            <div class="check-item">
+              <input type="checkbox" id="shareStats" checked />
+              <label for="shareStats">Include recent stats</label>
+            </div>
+            <div class="check-item">
+              <input type="checkbox" id="shareCallToAction" checked />
+              <label for="shareCallToAction">Add join challenge CTA</label>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: 16px;">
+            <label for="customMessage">Custom message (optional)</label>
+            <textarea id="customMessage" placeholder="Add a personal message to your shared progress..." style="min-height: 80px;"></textarea>
+          </div>
+
+          <div class="submit-actions" style="margin-top: 16px;">
+            <button type="button" class="btn btn-primary" id="previewShare">Preview Share</button>
+            <button type="button" class="btn btn-secondary" id="downloadShare">Download Image</button>
+          </div>
+        </div>
+
+        <!-- Community Tab -->
+        <div id="community" class="tab-content">
+          <div class="section-heading">
+            <h3>Create New Group</h3>
+          </div>
+
+          <div style="display: grid; gap: 14px;">
+            <div class="field">
+              <label for="groupName">Group Name</label>
+              <input type="text" id="groupName" placeholder="e.g., 'Morning Warriors', '30-Day Challenge'" />
+            </div>
+            <div class="field">
+              <label for="groupDescription">Description</label>
+              <textarea id="groupDescription" placeholder="What is this group about? What are the rules?" style="min-height: 80px;"></textarea>
+            </div>
+            <div class="field">
+              <label for="groupCategory">Category</label>
+              <select id="groupCategory">
+                <option value="general">General Discipline</option>
+                <option value="fitness">Fitness & Health</option>
+                <option value="mental">Mental Health</option>
+                <option value="career">Career & Study</option>
+                <option value="spiritual">Spiritual Growth</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="check-item">
+              <input type="checkbox" id="groupPrivate" />
+              <label for="groupPrivate">Make this group private (invite only)</label>
+            </div>
+            <button type="button" class="btn btn-primary" id="createGroupBtn">Create Group</button>
+          </div>
+        </div>
+      </section>
+
       <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
         <a href="#submit"><span class="mobile-nav-icon">+</span><span>Log</span></a>
         <a href="#routine"><span class="mobile-nav-icon">&#10003;</span><span>Routine</span></a>
@@ -1620,6 +2169,39 @@
         <a href="#calendar"><span class="mobile-nav-icon">&#9638;</span><span>Calendar</span></a>
       </nav>
     </div>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-title">Get in Touch</div>
+        <div class="contact-links">
+          <a href="https://wa.me/8801734488379" class="contact-link" title="Contact on WhatsApp">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24">
+                <circle cx="12" cy="12" r="12" fill="#25D366"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3 .97 4.29L2 22l6.29-.97A10 10 0 1012 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.85-9.53c-.2-.1-1.19-.59-1.38-.66-.18-.06-.32-.1-.46.1-.14.2-.54.66-.67.8-.12.14-.25.16-.45.05-.2-.1-.84-.31-1.6-.99-.59-.53-1-1.19-1.1-1.39-.12-.2-.01-.31.08-.41.08-.08.2-.21.29-.31.1-.1.13-.17.2-.28.06-.11.03-.2-.02-.28-.05-.09-.46-1.11-.63-1.52-.17-.39-.33-.34-.46-.34-.12 0-.25-.01-.39-.01-.13 0-.35.1-.53.48-.18.38-.69 1.33-.69 3.25 0 1.91 1.11 3.77 1.26 4.04.15.27 2.08 3.19 5.05 4.48.7.3 1.25.48 1.68.62.7.23 1.34.2 1.84.12.56-.08 1.73-.71 1.97-1.39.23-.68.23-1.27.16-1.39-.07-.12-.27-.2-.56-.35z" fill="white"/>
+              </svg>
+            </span>
+            <span>WhatsApp</span>
+          </a>
+          <a href="mailto:saadmuktadirhasan@gmail.com" class="contact-link" title="Send Email">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </span>
+            <span>Email</span>
+          </a>
+          <a href="https://github.com/Muktadir-669" class="contact-link" title="Visit GitHub Profile" target="_blank" rel="noopener noreferrer">
+            <span class="contact-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </span>
+            <span>GitHub</span>
+          </a>
+        </div>
+      </div>
+    </footer>
 
     <script>
       const DEFAULT_RULES = [
@@ -2556,6 +3138,378 @@
       if ('serviceWorker' in navigator && location.protocol !== 'file:') {
         navigator.serviceWorker.register('sw.js').catch(() => {});
       }
+
+      // ========== SOCIAL FEATURES ==========
+      const FRIENDS_KEY = 'disciplineFriends';
+      const CHALLENGES_KEY = 'disciplineChallenges';
+      const COMMUNITIES_KEY = 'disciplineCommunities';
+      const LEADERBOARD_KEY = 'disciplineLeaderboard';
+
+      // Helper functions for social features
+      function getLeaderboard() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+          return Array.isArray(stored) ? stored : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveLeaderboard(data) {
+        localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(data));
+      }
+
+      function getFriends() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(FRIENDS_KEY) || '[]');
+          return Array.isArray(stored) ? stored : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveFriends(friends) {
+        localStorage.setItem(FRIENDS_KEY, JSON.stringify(friends));
+      }
+
+      function getChallenges() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(CHALLENGES_KEY) || '[]');
+          return Array.isArray(stored) ? stored : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveChallenges(challenges) {
+        localStorage.setItem(CHALLENGES_KEY, JSON.stringify(challenges));
+      }
+
+      function getCommunities() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(COMMUNITIES_KEY) || '[]');
+          return Array.isArray(stored) ? stored : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveCommunities(communities) {
+        localStorage.setItem(COMMUNITIES_KEY, JSON.stringify(communities));
+      }
+
+      // LEADERBOARD
+      function renderLeaderboard() {
+        const container = document.getElementById('leaderboardList');
+        if (!container) return;
+
+        const myScore = Math.round((getEntries().reduce((t, e) => t + Number(e.percent || 0), 0) / Math.max(getEntries().length, 1)));
+        const myName = localStorage.getItem(PROFILE_KEY) || 'You';
+
+        let leaderboard = getLeaderboard();
+        const myData = { name: myName, score: myScore, date: new Date().toLocaleDateString() };
+        leaderboard = leaderboard.filter(item => item.name !== myName);
+        leaderboard.push(myData);
+        leaderboard.sort((a, b) => b.score - a.score);
+        saveLeaderboard(leaderboard);
+
+        container.innerHTML = leaderboard.slice(0, 9).map((entry, idx) => `
+          <div class="leaderboard-card">
+            <div class="rank-badge">#${idx + 1}</div>
+            <div class="rank-name">${entry.name}</div>
+            <div class="rank-score">${entry.score}% average</div>
+            <div class="rank-meta">Updated ${entry.date}</div>
+          </div>
+        `).join('');
+      }
+
+      // FRIENDS & CHALLENGES
+      function renderFriends() {
+        const container = document.getElementById('friendsList');
+        if (!container) return;
+
+        const friends = getFriends();
+        if (!friends.length) {
+          container.innerHTML = '<div class="empty">No friends added yet. Add one to start challenges!</div>';
+          return;
+        }
+
+        container.innerHTML = friends.map((friend, idx) => `
+          <div class="friend-item">
+            <div class="friend-info">
+              <div class="friend-avatar">${friend.name.charAt(0).toUpperCase()}</div>
+              <div class="friend-details">
+                <div class="friend-name">${friend.name}</div>
+                <div class="friend-score">${friend.score || 0}% avg score</div>
+              </div>
+            </div>
+            <div class="friend-actions">
+              <button type="button" class="friend-action-btn" onclick="startChallenge(${idx})">Challenge</button>
+              <button type="button" class="friend-action-btn" style="background: rgba(255,107,107,0.08); color: #ff6b6b; border-color: rgba(255,107,107,0.25);" onclick="removeFriend(${idx})">Remove</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function addFriend() {
+        const input = document.getElementById('friendInput');
+        const name = input.value.trim();
+        if (!name) return;
+
+        const friends = getFriends();
+        if (friends.some(f => f.name.toLowerCase() === name.toLowerCase())) {
+          alert('Friend already added!');
+          return;
+        }
+
+        friends.push({ name, score: 0, joined: new Date().toLocaleDateString() });
+        saveFriends(friends);
+        input.value = '';
+        renderFriends();
+      }
+
+      function removeFriend(index) {
+        if (!confirm('Remove this friend?')) return;
+        const friends = getFriends();
+        friends.splice(index, 1);
+        saveFriends(friends);
+        renderFriends();
+      }
+
+      function startChallenge(friendIndex) {
+        const friends = getFriends();
+        const friend = friends[friendIndex];
+        if (!friend) return;
+
+        const challenges = getChallenges();
+        const challenge = {
+          id: Date.now(),
+          friendName: friend.name,
+          startDate: new Date().toLocaleDateString(),
+          endDate: new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString(),
+          yourScore: 0,
+          friendScore: friend.score || 0,
+          status: 'active'
+        };
+
+        challenges.push(challenge);
+        saveChallenges(challenges);
+        renderActiveChallenges();
+        alert(`Challenge started with ${friend.name}! 7-day competition begins.`);
+      }
+
+      function renderActiveChallenges() {
+        const container = document.getElementById('activeChallengesList');
+        if (!container) return;
+
+        const challenges = getChallenges().filter(c => c.status === 'active');
+        const count = document.getElementById('activeChallengeCount');
+        if (count) count.textContent = challenges.length + ' active';
+
+        if (!challenges.length) {
+          container.innerHTML = '<div class="empty">No active challenges. Add a friend to start one!</div>';
+          return;
+        }
+
+        const myScore = Math.round((getEntries().reduce((t, e) => t + Number(e.percent || 0), 0) / Math.max(getEntries().length, 1)));
+
+        container.innerHTML = challenges.map((ch, idx) => {
+          const yourProgress = Math.min(100, myScore);
+          const friendProgress = Math.min(100, ch.friendScore);
+          const winner = yourProgress > friendProgress ? 'You\'re winning!' : yourProgress < friendProgress ? 'Friend is ahead' : 'It\'s tied';
+
+          return `
+            <div class="challenge-card">
+              <div class="challenge-header">
+                <div class="challenge-title">You vs ${ch.friendName}</div>
+                <div class="challenge-status">${ch.status.toUpperCase()}</div>
+              </div>
+              <div class="challenge-meta">
+                Duration: ${ch.startDate} to ${ch.endDate} · ${winner}
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div>
+                  <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 6px;">Your score</div>
+                  <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary);">${yourProgress}%</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.8rem; color: var(--muted); margin-bottom: 6px;">${ch.friendName}</div>
+                  <div style="font-size: 1.4rem; font-weight: 700; color: var(--secondary);">${friendProgress}%</div>
+                </div>
+              </div>
+              <div class="challenge-progress">
+                <div class="challenge-progress-bar" style="width: ${yourProgress}%; background: linear-gradient(90deg, var(--primary), var(--secondary));"></div>
+              </div>
+              <div class="challenge-actions">
+                <button type="button" class="friend-action-btn" onclick="endChallenge(${idx})">End Challenge</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function endChallenge(index) {
+        if (!confirm('End this challenge?')) return;
+        const challenges = getChallenges();
+        challenges[index].status = 'completed';
+        saveChallenges(challenges);
+        renderActiveChallenges();
+      }
+
+      // SOCIAL SHARING
+      function getShareMessage() {
+        const profile = localStorage.getItem(PROFILE_KEY) || 'I';
+        const myScore = Math.round((getEntries().reduce((t, e) => t + Number(e.percent || 0), 0) / Math.max(getEntries().length, 1)));
+        const streak = document.getElementById('currentStreak').textContent;
+        const custom = document.getElementById('customMessage').value.trim();
+
+        let message = '';
+        if (document.getElementById('shareStreak').checked) {
+          message += `🔥 ${streak} streak! `;
+        }
+        if (document.getElementById('shareStats').checked) {
+          message += `📊 ${myScore}% average completion. `;
+        }
+        message += `${profile} is building discipline through the 365 Days Challenge.`;
+        if (custom) message += ` "${custom}"`;
+        if (document.getElementById('shareCallToAction').checked) {
+          message += ` Join me: [your-domain-here]`;
+        }
+
+        return message;
+      }
+
+      function shareOnWhatsApp() {
+        const message = getShareMessage();
+        window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+      }
+
+      function shareOnTwitter() {
+        const message = getShareMessage();
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)} %23DisciplineChallenge %23365Days`, '_blank');
+      }
+
+      function shareOnFacebook() {
+        const message = getShareMessage();
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(message)}`, '_blank');
+      }
+
+      function shareOnLinkedIn() {
+        const message = getShareMessage();
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank');
+      }
+
+      // COMMUNITY GROUPS
+      function renderCommunities() {
+        const container = document.getElementById('communityList');
+        if (!container) return;
+
+        const communities = getCommunities();
+        const defaultCommunities = [
+          { id: 1, name: '🌅 Early Birds', icon: '🌅', members: 342, desc: 'Wake up early, stay disciplined', joinable: false },
+          { id: 2, name: '💪 Fitness Warriors', icon: '💪', members: 856, desc: 'Daily workouts, consistent progress', joinable: false },
+          { id: 3, name: '📚 Knowledge Seekers', icon: '📚', members: 521, desc: '2+ hours study daily', joinable: false },
+          { id: 4, name: '🧘 Mind & Spirit', icon: '🧘', members: 289, desc: 'Meditation, prayer, mindfulness', joinable: false }
+        ];
+
+        const all = [...defaultCommunities, ...communities].slice(0, 8);
+
+        container.innerHTML = all.map((community) => {
+          const isJoinable = Boolean(community.joinable);
+          return `
+            <div class="community-card">
+              <div class="community-header">
+                <div class="community-icon">${community.icon}</div>
+                <div>
+                  <div class="community-name">${community.name}</div>
+                  <div class="community-members">${community.members} members</div>
+                </div>
+              </div>
+              <div class="community-desc">${community.desc}</div>
+              <button type="button" class="btn btn-primary btn-small" style="width: 100%;" ${isJoinable ? '' : 'disabled aria-disabled="true"'}>
+                ${isJoinable ? 'Join Group' : 'Closed'}
+              </button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function createCommunity() {
+        const name = document.getElementById('groupName').value.trim();
+        const desc = document.getElementById('groupDescription').value.trim();
+        const category = document.getElementById('groupCategory').value;
+        const isPrivate = document.getElementById('groupPrivate').checked;
+
+        if (!name || !desc) {
+          alert('Fill in all required fields');
+          return;
+        }
+
+        const community = {
+          id: Date.now(),
+          name: `📌 ${name}`,
+          icon: '📌',
+          members: 1,
+          desc: desc,
+          category: category,
+          private: isPrivate,
+          created: new Date().toLocaleDateString()
+        };
+
+        const communities = getCommunities();
+        communities.push(community);
+        saveCommunities(communities);
+
+        document.getElementById('groupName').value = '';
+        document.getElementById('groupDescription').value = '';
+        document.getElementById('groupPrivate').checked = false;
+
+        renderCommunities();
+        alert(`Community "${name}" created successfully!`);
+      }
+
+      // TAB SWITCHING
+      document.querySelectorAll('.social-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.social-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+          tab.classList.add('active');
+          const tabName = tab.getAttribute('data-tab');
+          document.getElementById(tabName).classList.add('active');
+
+          if (tabName === 'leaderboard') renderLeaderboard();
+          if (tabName === 'challenges') {
+            renderFriends();
+            renderActiveChallenges();
+          }
+          if (tabName === 'community') renderCommunities();
+        });
+      });
+
+      // EVENT LISTENERS FOR SOCIAL FEATURES
+      document.getElementById('addFriendBtn').addEventListener('click', addFriend);
+      document.getElementById('friendInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') addFriend();
+      });
+
+      document.getElementById('shareWhatsApp').addEventListener('click', shareOnWhatsApp);
+      document.getElementById('shareTwitter').addEventListener('click', shareOnTwitter);
+      document.getElementById('shareFacebook').addEventListener('click', shareOnFacebook);
+      document.getElementById('shareLinkedIn').addEventListener('click', shareOnLinkedIn);
+
+      document.getElementById('refreshLeaderboard').addEventListener('click', renderLeaderboard);
+      document.getElementById('createGroupBtn').addEventListener('click', createCommunity);
+
+      document.getElementById('previewShare').addEventListener('click', () => {
+        alert('Preview:\n\n' + getShareMessage());
+      });
+
+      document.getElementById('downloadShare').addEventListener('click', shareProgressCard);
+
+      // Initialize social features
+      renderLeaderboard();
+      renderCommunities();
     </script>
   </body>
 </html>
