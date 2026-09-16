@@ -751,24 +751,27 @@
             onSnapshot
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'discipline-e02ef';
-        const fallbackConfig = {
-            apiKey: "AIzaSyDkTy9LR3yr7MfLfhF41h5wLizeK8dNiUQ",
-            authDomain: "discipline-e02ef.firebaseapp.com",
-            projectId: "discipline-e02ef",
-            storageBucket: "discipline-e02ef.firebasestorage.app",
-            messagingSenderId: "713022767658",
-            appId: "1:713022767658:web:da7fa234195b3e53ccf953"
-        };
+       const appId =
+    typeof __app_id !== 'undefined'
+        ? __app_id
+        : 'discipline-e02ef';
 
-        let firebaseReady = false;
-        let auth = null;
-        let db = null;
-        let stopUserSnapshot = null;
-        let activeSyncUid = null;
-        let firebaseHydrated = false;
-        let pendingAuthProfileName = '';
+const fallbackConfig = {
+    apiKey: "AIzaSyDkTy9LR3yr7MfLfhF41h5wLizeK8dNiUQ",
+    authDomain: "discipline-e02ef.firebaseapp.com",
+    projectId: "discipline-e02ef",
+    storageBucket: "discipline-e02ef.firebasestorage.app",
+    messagingSenderId: "713022767658",
+    appId: "1:713022767658:web:da7fa234195b3e53ccf953"
+};
 
+let firebaseReady = false;
+let auth = null;
+let db = null;
+let stopUserSnapshot = null;
+let activeSyncUid = null;
+let firebaseHydrated = false;
+let pendingAuthProfileName = '';
 
         function getFirebaseConfig() {
             try {
