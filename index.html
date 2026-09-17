@@ -101,6 +101,11 @@
          radial-gradient(circle at 88% 72%,rgba(121,40,202,.08),transparent 28%),#020b17}
         .premium-topbar{height:92px;background:rgba(2,12,27,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(0,242,254,.18);box-shadow:0 10px 35px rgba(0,0,0,.28);position:fixed;top:0;left:0;right:0;z-index:50}
         .premium-topbar-inner{height:100%;display:flex;align-items:center;gap:20px;padding:0 28px}
+        .mobile-menu-toggle{display:none;width:42px;height:42px;border:1px solid rgba(0,234,255,.22);background:rgba(7,24,42,.88);color:#dffcff;border-radius:12px;place-items:center;cursor:pointer;font-size:18px;flex:none}
+        .mobile-nav-menu{display:none}
+        .mobile-nav-menu button{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;border:0;background:transparent;color:#cfe4f2;text-align:left;font-size:13px;font-weight:700;border-radius:10px;cursor:pointer}
+        .mobile-nav-menu button:hover,.mobile-nav-menu button.tab-active{background:rgba(0,234,255,.08);color:#00efff}
+
         .premium-brand{width:280px;display:flex;align-items:center;gap:14px;flex:none}
         .premium-brand-mark{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#00eaff,#00bcd4);display:grid;place-items:center;color:#001018;font-size:27px;box-shadow:0 0 28px rgba(0,242,254,.22)}
         .premium-brand-title{font-weight:900;font-size:20px;letter-spacing:.02em;color:#e9fbff;line-height:1.05}
@@ -178,7 +183,7 @@
         @media(max-width:800px){.calendar-stats{grid-template-columns:1fr 1fr;padding:14px}.calendar-weekdays{padding:12px 10px 8px;gap:5px}.calendar-grid{padding:0 10px 16px;gap:5px}.calendar-cell{min-height:92px;padding:8px;border-radius:12px}.calendar-pct{font-size:17px}.calendar-tags{display:none}.calendar-toolbar{padding:16px}.calendar-detail-summary{grid-template-columns:1fr}.calendar-rule-list{grid-template-columns:1fr}}
 
         @media(max-width:1100px){.premium-brand{width:220px}.premium-nav button{padding:10px 8px;font-size:12px}.premium-auth{width:100px}.premium-sidebar{width:200px}.premium-main{margin-left:200px}.premium-grid{grid-template-columns:1fr}.stats-column{display:grid;grid-template-columns:repeat(2,1fr)}}
-        @media(max-width:800px){.premium-topbar{height:72px}.premium-topbar-inner{padding:0 14px}.premium-brand{width:auto}.premium-brand-title{font-size:15px}.premium-brand-mark{width:42px;height:42px;font-size:20px}.premium-brand-sub{font-size:8px}.premium-nav{display:none}.premium-auth{margin-left:auto;width:auto}.premium-auth-circle{width:40px;height:40px;font-size:16px}.premium-sidebar{display:none}.premium-main{margin-left:0;padding-top:72px!important;padding-left:14px!important;padding-right:14px!important}.premium-dashboard{padding-top:18px}.premium-hero h1{font-size:30px}.premium-hero-content{padding:24px 18px}.premium-grid{display:block}.stats-column{display:grid;grid-template-columns:1fr 1fr;margin-top:18px}.protocol-card{margin-top:18px}#routineChecklistContainer{grid-template-columns:1fr!important}}
+        @media(max-width:800px){.premium-topbar{height:72px}.premium-topbar-inner{padding:0 14px;gap:10px;position:relative}.premium-brand{width:auto}.premium-brand-title{font-size:15px}.premium-brand-mark{width:42px;height:42px;font-size:20px}.premium-brand-sub{font-size:8px}.premium-nav{display:none}.mobile-menu-toggle{display:grid;margin-left:auto}.mobile-nav-menu{position:absolute;right:14px;top:62px;width:min(240px,calc(100vw - 28px));padding:8px;background:rgba(3,18,34,.98);border:1px solid rgba(0,234,255,.16);border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,.45);z-index:100;flex-direction:column;gap:3px}.mobile-nav-menu.open{display:flex}.premium-auth{margin-left:0;width:auto}.premium-auth-circle{width:40px;height:40px;font-size:16px}.premium-sidebar{display:none}.premium-main{margin-left:0;padding-top:72px!important;padding-left:14px!important;padding-right:14px!important}.premium-dashboard{padding-top:18px}.premium-hero h1{font-size:30px}.premium-hero-content{padding:24px 18px}.premium-grid{display:block}.stats-column{display:grid;grid-template-columns:1fr 1fr;margin-top:18px}.protocol-card{margin-top:18px}#routineChecklistContainer{grid-template-columns:1fr!important}}
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
@@ -201,6 +206,15 @@
                 <button onclick="switchTab('community')" id="nav-community"><i class="fa-solid fa-users mr-1.5"></i>Community</button>
                 <button onclick="switchTab('profile')" id="nav-profile"><i class="fa-solid fa-gear mr-1.5"></i>Settings</button>
             </nav>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()" aria-label="Open navigation menu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
+            <div class="mobile-nav-menu" id="mobileNavMenu">
+                <button onclick="switchTab('dashboard'); closeMobileMenu()"><i class="fa-solid fa-house"></i>Dashboard</button>
+                <button onclick="switchTab('calendar'); closeMobileMenu()"><i class="fa-solid fa-list-check"></i>Rules</button>
+                <button onclick="switchTab('badges'); closeMobileMenu()"><i class="fa-solid fa-chart-line"></i>Progress</button>
+                <button onclick="switchTab('analytics'); closeMobileMenu()"><i class="fa-solid fa-chart-column"></i>Analytics</button>
+                <button onclick="switchTab('community'); closeMobileMenu()"><i class="fa-solid fa-users"></i>Community</button>
+                <button onclick="switchTab('profile'); closeMobileMenu()"><i class="fa-solid fa-gear"></i>Settings</button>
+            </div>
             <div class="premium-auth" id="authHeaderBtnContainer">
                 <button onclick="openAuthModal()" id="loginModalTriggerBtn" class="premium-auth-circle" title="Sign In / Register" aria-label="Sign In / Register"><i class="fa-solid fa-user"></i></button>
                 <div id="userProfileHeaderBlock" class="hidden flex items-center space-x-2">
@@ -1261,8 +1275,28 @@
             updateReminderButton();
         }
 
+        // Mobile navigation
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileNavMenu');
+            const button = document.getElementById('mobileMenuToggle');
+            if (!menu || !button) return;
+            const isOpen = menu.classList.toggle('open');
+            button.setAttribute('aria-expanded', String(isOpen));
+            button.innerHTML = isOpen ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+        }
+
+        function closeMobileMenu() {
+            const menu = document.getElementById('mobileNavMenu');
+            const button = document.getElementById('mobileMenuToggle');
+            if (!menu || !button) return;
+            menu.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+            button.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        }
+
         // Navigation Switcher
         function switchTab(tabId) {
+            closeMobileMenu();
             const tabs = ['dashboard', 'calendar', 'badges', 'analytics', 'community', 'profile'];
             tabs.forEach(t => {
                 const el = document.getElementById(`tab-${t}`);
@@ -1297,6 +1331,13 @@
                 loadCommunityData();
             }
         }
+
+        document.addEventListener('click', (event) => {
+            const menu = document.getElementById('mobileNavMenu');
+            const toggle = document.getElementById('mobileMenuToggle');
+            if (!menu || !toggle || !menu.classList.contains('open')) return;
+            if (!menu.contains(event.target) && !toggle.contains(event.target)) closeMobileMenu();
+        });
 
         // Header & Profile Functions
         function renderHeaderProfile() {
@@ -2664,21 +2705,6 @@
                 console.error('Join challenge error:', error);
                 showNotification('Could not join the challenge.');
             }
-        }
-
-        function openGroupModal() {
-            const modal = document.getElementById('groupModal');
-            if (!modal) return;
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.getElementById('groupNameInput')?.focus();
-        }
-
-        function closeGroupModal() {
-            const modal = document.getElementById('groupModal');
-            if (!modal) return;
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
         }
 
         function renderSquads() {
