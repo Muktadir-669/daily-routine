@@ -440,6 +440,9 @@
                         <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Friend Requests</h4>
                         <div id="friendRequestsList" class="space-y-2 mb-4"></div>
 
+                        <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Challenge Invitations</h4>
+                        <div id="challengeInvitesList" class="space-y-2 mb-4"></div>
+
                         <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">My Connections</h4>
                         <div id="friendsList" class="space-y-2"></div>
                     </div>
@@ -709,6 +712,22 @@
                 <input type="text" id="challengeTitleInput" placeholder="Challenge Title (e.g. 7-Day Cold Shower)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
                 <input type="number" id="challengeDaysInput" placeholder="Duration (Days, e.g. 7)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
                 <button onclick="createChallenge()" class="w-full glow-btn py-2 text-black font-bold text-xs rounded-xl">Create Challenge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHALLENGE INVITE MODAL -->
+    <div id="challengeInviteModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-2xl p-6 modal-fade-in relative border border-slate-700">
+            <button onclick="closeChallengeInviteModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold text-white mb-1">Invite Friend to Challenge</h3>
+            <p id="challengeInviteTitle" class="text-xs text-gray-400 mb-4"></p>
+            <div class="space-y-3">
+                <label class="block text-xs text-gray-400">Choose a friend</label>
+                <select id="challengeInviteFriendSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500"></select>
+                <button onclick="sendChallengeInvite()" class="w-full glow-btn py-2.5 text-black font-bold text-xs rounded-xl">Send Invitation</button>
             </div>
         </div>
     </div>
@@ -1083,6 +1102,7 @@
             friendRequests: [],
             outgoingRequests: [],
             friends: [],
+            challengeInvites: [],
             challenges: [],
             groups: []
         };
@@ -1858,6 +1878,7 @@
             communityData.friendRequests = [];
             communityData.outgoingRequests = [];
             communityData.friends = [];
+            communityData.challengeInvites = [];
             communityData.challenges = [];
             communityData.groups = [];
             communityLoaded = false;
@@ -1944,6 +1965,20 @@
                 communityData.outgoingRequests = outgoingSnap.docs
                     .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
                     .filter(request => request.status === 'pending');
+
+                // Incoming challenge invitations. We query only by recipient UID
+                // to avoid requiring a composite Firestore index.
+                const challengeInvitesSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'challengeInvites'),
+                        f.where('toUid', '==', user.uid),
+                        f.limit(50)
+                    )
+                );
+
+                communityData.challengeInvites = challengeInvitesSnap.docs
+                    .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+                    .filter(invite => invite.status === 'pending');
 
                 // Accepted friendships.
                 const friendshipsSnap = await f.getDocs(
@@ -2125,6 +2160,25 @@
                     </div>
                 `).join('')
                 : `<div class="text-xs text-gray-500">No pending requests.</div>`;
+
+            const challengeInvitesList = document.getElementById('challengeInvitesList');
+            if (challengeInvitesList) {
+                challengeInvitesList.innerHTML = communityData.challengeInvites.length
+                    ? communityData.challengeInvites.map(invite => `
+                        <div class="p-2 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+                            <div class="flex items-center justify-between gap-2 mb-1">
+                                <div class="text-gray-200 font-medium truncate">${escapeHTML(invite.challengeTitle || 'Discipline Challenge')}</div>
+                                <span class="text-[10px] text-cyan-400 flex-none">${Number(invite.challengeDuration || 0)}d</span>
+                            </div>
+                            <div class="text-[10px] text-gray-500 mb-2">Invited by ${escapeHTML(invite.fromName || invite.fromUid)}</div>
+                            <div class="flex gap-1.5">
+                                <button onclick="acceptChallengeInvite('${escapeHTML(invite.id)}')" class="flex-1 px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Accept</button>
+                                <button onclick="declineChallengeInvite('${escapeHTML(invite.id)}')" class="flex-1 px-2 py-1 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20">Decline</button>
+                            </div>
+                        </div>
+                    `).join('')
+                    : `<div class="text-xs text-gray-500 mb-4">No pending challenge invitations.</div>`;
+            }
 
             const outgoingText = communityData.outgoingRequests.length
                 ? `<div class="text-[10px] text-gray-500 mb-2">Pending requests: ${communityData.outgoingRequests.length}</div>`
@@ -2338,9 +2392,14 @@
                             <span class="text-cyan-400 flex-none">${Number(challenge.duration || 0)} Days</span>
                         </div>
                         <div class="text-[10px] text-gray-500 mb-2">${Number(challenge.participantCount || 0)} participant(s) • by ${creator}</div>
-                        <button onclick="joinCommunityChallenge('${escapeHTML(challenge.id)}')" ${joined ? 'disabled' : ''} class="w-full py-1.5 rounded-lg text-[10px] font-bold border ${joined ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20 hover:bg-cyan-500/20'}">
-                            ${joined ? 'Joined' : 'Join Challenge'}
-                        </button>
+                        <div class="flex gap-1.5">
+                            <button onclick="joinCommunityChallenge('${escapeHTML(challenge.id)}')" ${joined ? 'disabled' : ''} class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border ${joined ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20 hover:bg-cyan-500/20'}">
+                                ${joined ? 'Joined' : 'Join Challenge'}
+                            </button>
+                            <button onclick="openChallengeInviteModal('${escapeHTML(challenge.id)}')" class="flex-1 py-1.5 rounded-lg text-[10px] font-bold border bg-purple-500/10 text-purple-300 border-purple-500/20 hover:bg-purple-500/20">
+                                Invite Friend
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -2361,6 +2420,172 @@
             const modal = document.getElementById('challengeModal');
             if (!modal) return;
             modal.classList.add('hidden');
+        }
+
+        function openChallengeInviteModal(challengeId) {
+            const modal = document.getElementById('challengeInviteModal');
+            const select = document.getElementById('challengeInviteFriendSelect');
+            const titleEl = document.getElementById('challengeInviteTitle');
+            if (!modal || !select || !titleEl) return;
+
+            const challenge = communityData.challenges.find(item => item.id === challengeId);
+            if (!challenge) {
+                showNotification('Challenge not found. Refresh and try again.');
+                return;
+            }
+
+            if (!communityData.friends.length) {
+                showNotification('Add a friend first before sending a challenge invitation.');
+                return;
+            }
+
+            modal.dataset.challengeId = challengeId;
+            titleEl.textContent = `${challenge.title || 'Discipline Challenge'} • ${Number(challenge.duration || 0)} days`;
+            select.innerHTML = communityData.friends.map(friend => `
+                <option value="${escapeHTML(friend.uid)}">${escapeHTML(friend.name || friend.uid)}</option>
+            `).join('');
+            modal.classList.remove('hidden');
+        }
+
+        function closeChallengeInviteModal() {
+            const modal = document.getElementById('challengeInviteModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function sendChallengeInvite() {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            const modal = document.getElementById('challengeInviteModal');
+            const select = document.getElementById('challengeInviteFriendSelect');
+
+            if (!window.firebaseReady || !f || !dbRef || !user || !modal || !select) {
+                showNotification('Please sign in first.');
+                return;
+            }
+
+            const challengeId = modal.dataset.challengeId;
+            const friendUid = select.value;
+            const challenge = communityData.challenges.find(item => item.id === challengeId);
+            const friend = communityData.friends.find(item => item.uid === friendUid);
+
+            if (!challenge || !friendUid || !friend) {
+                showNotification('Please choose a valid friend and challenge.');
+                return;
+            }
+
+            try {
+                const existingSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'challengeInvites'),
+                        f.where('fromUid', '==', user.uid),
+                        f.limit(100)
+                    )
+                );
+
+                const alreadyPending = existingSnap.docs.some(docSnap => {
+                    const data = docSnap.data() || {};
+                    return data.toUid === friendUid && data.challengeId === challengeId && data.status === 'pending';
+                });
+
+                if (alreadyPending) {
+                    showNotification('That friend already has a pending invitation for this challenge.');
+                    return;
+                }
+
+                const inviteId = `${user.uid}__${friendUid}__${challengeId}__${Date.now()}`;
+                await f.setDoc(
+                    f.doc(dbRef, 'challengeInvites', inviteId),
+                    {
+                        fromUid: user.uid,
+                        fromName: state.profile.name || user.displayName || 'Discipline Warrior',
+                        toUid: friendUid,
+                        toName: friend.name || 'Discipline Warrior',
+                        challengeId,
+                        challengeTitle: challenge.title || 'Discipline Challenge',
+                        challengeDuration: Number(challenge.duration || 0),
+                        status: 'pending',
+                        createdAt: Date.now()
+                    }
+                );
+
+                closeChallengeInviteModal();
+                showNotification('Challenge invitation sent!');
+            } catch (error) {
+                console.error('Send challenge invite error:', error);
+                showNotification('Could not send challenge invitation.');
+            }
+        }
+
+        async function acceptChallengeInvite(inviteId) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            if (!f || !dbRef || !user) return;
+
+            try {
+                const inviteRef = f.doc(dbRef, 'challengeInvites', inviteId);
+                const inviteSnap = await f.getDoc(inviteRef);
+                if (!inviteSnap.exists()) return;
+
+                const invite = inviteSnap.data() || {};
+                if (invite.toUid !== user.uid || invite.status !== 'pending') return;
+
+                const challengeRef = f.doc(dbRef, 'communityChallenges', invite.challengeId);
+                const challengeSnap = await f.getDoc(challengeRef);
+                if (!challengeSnap.exists()) {
+                    showNotification('This challenge no longer exists.');
+                    return;
+                }
+
+                await f.setDoc(
+                    f.doc(dbRef, 'communityChallenges', invite.challengeId, 'participants', user.uid),
+                    {
+                        uid: user.uid,
+                        name: state.profile.name || user.displayName || 'Discipline Warrior',
+                        joinedAt: Date.now()
+                    },
+                    { merge: true }
+                );
+
+                await f.setDoc(inviteRef, {
+                    status: 'accepted',
+                    respondedAt: Date.now()
+                }, { merge: true });
+
+                showNotification('Challenge invitation accepted!');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Accept challenge invite error:', error);
+                showNotification('Could not accept challenge invitation.');
+            }
+        }
+
+        async function declineChallengeInvite(inviteId) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            if (!f || !dbRef || !user) return;
+
+            try {
+                const inviteRef = f.doc(dbRef, 'challengeInvites', inviteId);
+                const inviteSnap = await f.getDoc(inviteRef);
+                if (!inviteSnap.exists()) return;
+
+                const invite = inviteSnap.data() || {};
+                if (invite.toUid !== user.uid || invite.status !== 'pending') return;
+
+                await f.setDoc(inviteRef, {
+                    status: 'declined',
+                    respondedAt: Date.now()
+                }, { merge: true });
+
+                showNotification('Challenge invitation declined.');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Decline challenge invite error:', error);
+                showNotification('Could not decline challenge invitation.');
+            }
         }
 
         async function createChallenge() {
