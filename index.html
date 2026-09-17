@@ -536,6 +536,22 @@
                     </div>
                     
                     <form onsubmit="event.preventDefault(); saveProfile();" class="space-y-4">
+                        <div class="glass-card rounded-2xl p-4 border border-cyan-900/50 bg-cyan-950/10">
+                            <div class="flex items-start justify-between gap-3 mb-2">
+                                <div>
+                                    <h3 class="text-sm font-bold text-white">My User ID</h3>
+                                    <p class="text-[11px] text-gray-400 mt-1">Share this ID with another user so they can send you a friend request.</p>
+                                </div>
+                                <i class="fa-solid fa-id-card text-cyan-400 mt-0.5"></i>
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="text" id="profileUserId" readonly value="Sign in to see your User ID" class="flex-1 min-w-0 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-cyan-300 font-mono focus:outline-none">
+                                <button type="button" onclick="copyUserId()" id="copyUserIdBtn" class="shrink-0 bg-slate-800 hover:bg-slate-700 text-cyan-400 px-3 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 flex items-center gap-2 transition">
+                                    <i class="fa-solid fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+
                         <div>
                             <label class="block text-xs font-semibold text-gray-400 mb-1">Display Name</label>
                             <input type="text" id="profileName" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
@@ -1271,6 +1287,46 @@
             document.getElementById('profileName').value = state.profile.name || '';
             document.getElementById('profileAvatarSeed').value = state.profile.avatarSeed || '';
             document.getElementById('profileMantra').value = state.profile.mantra || '';
+
+            const profileUserId = document.getElementById('profileUserId');
+            const copyUserIdBtn = document.getElementById('copyUserIdBtn');
+            const uid = window.currentUser?.uid || '';
+            if (profileUserId) {
+                profileUserId.value = uid || 'Sign in to see your User ID';
+            }
+            if (copyUserIdBtn) {
+                copyUserIdBtn.disabled = !uid;
+                copyUserIdBtn.classList.toggle('opacity-50', !uid);
+                copyUserIdBtn.classList.toggle('cursor-not-allowed', !uid);
+            }
+        }
+
+        async function copyUserId() {
+            const uid = window.currentUser?.uid || '';
+            if (!uid) {
+                showNotification('Please sign in first.');
+                return;
+            }
+
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(uid);
+                } else {
+                    const temp = document.createElement('textarea');
+                    temp.value = uid;
+                    temp.setAttribute('readonly', '');
+                    temp.style.position = 'fixed';
+                    temp.style.opacity = '0';
+                    document.body.appendChild(temp);
+                    temp.select();
+                    document.execCommand('copy');
+                    temp.remove();
+                }
+                showNotification('User ID copied! Share it with your friend.');
+            } catch (error) {
+                console.error('Copy User ID error:', error);
+                showNotification('Could not copy. Select the User ID and copy it manually.');
+            }
         }
 
         function renderDashboard() {
