@@ -920,7 +920,11 @@ let pendingAuthProfileName = '';
 
             try {
                 const userDocRef = doc(db, 'artifacts', appId, 'users', window.currentUser.uid, 'profile', 'data');
-                await setDoc(userDocRef, { state }, { merge: true });
+               await setDoc(userDocRef, { state }, { merge: true });
+
+if (window.syncPublicProfileToFirestore) {
+    await window.syncPublicProfileToFirestore();
+}
             } catch (error) {
                 console.error('Error saving state to Firestore:', error);
             }
