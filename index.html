@@ -2346,6 +2346,23 @@
             }).join('');
         }
 
+        function openChallengeModal() {
+            const modal = document.getElementById('challengeModal');
+            if (!modal) return;
+
+            modal.classList.remove('hidden');
+            const titleInput = document.getElementById('challengeTitleInput');
+            if (titleInput) {
+                setTimeout(() => titleInput.focus(), 50);
+            }
+        }
+
+        function closeChallengeModal() {
+            const modal = document.getElementById('challengeModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+        }
+
         async function createChallenge() {
             const f = window.firebaseFuncs;
             const dbRef = window.firebaseDb;
