@@ -2666,6 +2666,21 @@
             }
         }
 
+        function openGroupModal() {
+            const modal = document.getElementById('groupModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.getElementById('groupNameInput')?.focus();
+        }
+
+        function closeGroupModal() {
+            const modal = document.getElementById('groupModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
         function renderSquads() {
             const list = document.getElementById('communityGroupsList');
             if (!list) return;
