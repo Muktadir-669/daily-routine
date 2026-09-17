@@ -813,17 +813,22 @@ let pendingAuthProfileName = '';
                 window.appId = appId;
                 window.firebaseReady = true;
                 window.firebaseFuncs = {
-                    createUserWithEmailAndPassword,
-                    signInWithEmailAndPassword,
-                    signOut,
-                    signInWithPopup,
-                    GoogleAuthProvider,
-                    signInWithCustomToken,
-                    getDoc,
-                    doc,
-                    setDoc,
-                    onSnapshot
-                };
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    signInWithPopup,
+    GoogleAuthProvider,
+    signInWithCustomToken,
+    getDoc,
+    doc,
+    setDoc,
+    onSnapshot,
+    collection,
+    query,
+    orderBy,
+    limit,
+    getDocs
+};
             } else {
                 console.info('Firebase is not configured. Running in local mode.');
                 window.firebaseReady = false;
