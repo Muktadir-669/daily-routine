@@ -2190,23 +2190,55 @@
                     return;
                 }
 
-                const friendshipId = [user.uid, targetProfile.uid].sort().join('__');
-                const friendshipRef = f.doc(dbRef, 'friendships', friendshipId);
-                const friendshipSnap = await f.getDoc(friendshipRef);
+                // Do not directly read deterministic document IDs that may not exist.
+                // The Firestore rules for these collections protect existing documents via
+                // resource.data, so a getDoc() on a missing document can be rejected.
+                // Use allowed queries instead.
+                const friendshipsSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'friendships'),
+                        f.where('members', 'array-contains', user.uid)
+                    )
+                );
 
-                if (friendshipSnap.exists()) {
+                const alreadyFriends = friendshipsSnap.docs.some(docSnap => {
+                    const members = docSnap.data()?.members;
+                    return Array.isArray(members) && members.includes(targetProfile.uid);
+                });
+
+                if (alreadyFriends) {
                     showNotification('You are already friends.');
+                    return;
+                }
+
+                const outgoingSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'friendRequests'),
+                        f.where('fromUid', '==', user.uid),
+                        f.where('toUid', '==', targetProfile.uid)
+                    )
+                );
+
+                if (outgoingSnap.docs.some(docSnap => docSnap.data()?.status === 'pending')) {
+                    showNotification('Friend request already pending.');
+                    return;
+                }
+
+                const incomingSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'friendRequests'),
+                        f.where('fromUid', '==', targetProfile.uid),
+                        f.where('toUid', '==', user.uid)
+                    )
+                );
+
+                if (incomingSnap.docs.some(docSnap => docSnap.data()?.status === 'pending')) {
+                    showNotification('This user already sent you a friend request. Check Friend Requests.');
                     return;
                 }
 
                 const requestId = `${user.uid}__${targetProfile.uid}`;
                 const requestRef = f.doc(dbRef, 'friendRequests', requestId);
-                const existingRequest = await f.getDoc(requestRef);
-
-                if (existingRequest.exists() && existingRequest.data()?.status === 'pending') {
-                    showNotification('Friend request already pending.');
-                    return;
-                }
 
                 await f.setDoc(requestRef, {
                     fromUid: user.uid,
