@@ -1092,6 +1092,42 @@ let pendingAuthProfileName = '';
                 state.rules.length > 0 &&
                 entry.rulesCompleted.length >= state.rules.length;
         }
+             window.syncPublicProfileToFirestore = async function () {
+    if (!window.firebaseReady || !window.firebaseDb || !window.currentUser) return;
+    if (!firebaseHydrated || activeSyncUid !== window.currentUser.uid) return;
+
+    const streakData = calculateStreaks();
+
+    const entries = Object.values(state.entries || {}).filter(entry =>
+        entry &&
+        (
+            entry.isRecovery ||
+            entry.submitted ||
+            (Array.isArray(entry.rulesCompleted) && entry.rulesCompleted.length > 0)
+        )
+    );
+
+    const completedDays = entries.filter(entry => isSuccessfulDay(entry)).length;
+
+    const completionRate = entries.length
+        ? Math.round((completedDays / entries.length) * 100)
+        : 0;
+
+    const profileRef = window.firebaseFuncs.doc(
+        window.firebaseDb,
+        'publicProfiles',
+        window.currentUser.uid
+    );
+
+    await window.firebaseFuncs.setDoc(profileRef, {
+        name: state.profile.name || 'Discipline Warrior',
+        avatarSeed: state.profile.avatarSeed || 'Warrior',
+        currentStreak: streakData.current || 0,
+        bestStreak: streakData.best || 0,
+        completionRate: completionRate,
+        updatedAt: Date.now()
+    }, { merge: true });
+};
 
         function isAnyProgressDay(entry) {
             return Boolean(entry && Array.isArray(entry.rulesCompleted) && entry.rulesCompleted.length > 0);
