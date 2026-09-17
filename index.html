@@ -914,9 +914,10 @@ let pendingAuthProfileName = '';
             });
         }
 
-        window.syncStateToFirestore = async function () {
-            if (!firebaseReady || !db || !window.currentUser || window.currentUser.isAnonymous) return;
-            if (!firebaseHydrated || activeSyncUid !== window.currentUser.uid) return;
+window.syncPublicProfileToFirestore = async function () {
+    if (!window.firebaseReady || !window.firebaseDb || !window.currentUser) return;
+
+    const streakData = calculateStreaks();
 
             try {
                 const userDocRef = doc(db, 'artifacts', appId, 'users', window.currentUser.uid, 'profile', 'data');
