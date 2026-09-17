@@ -414,9 +414,14 @@
                 <div class="glass-card rounded-2xl p-5">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-white">Global Discipline Rankings</h3>
-                        <span class="text-xs text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded-full border border-cyan-800">
-                            <i class="fa-solid fa-globe mr-1"></i> Demo Network
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="loadCommunityData(true)" class="text-xs text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded-full border border-cyan-800 hover:bg-cyan-900">
+                                <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
+                            </button>
+                            <span class="text-xs text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-full border border-emerald-800">
+                                <i class="fa-solid fa-circle-check mr-1"></i> Live
+                            </span>
+                        </div>
                     </div>
 
                     <div id="leaderboardList" class="space-y-2"></div>
@@ -431,6 +436,9 @@
                             <input type="text" id="friendNameInput" placeholder="Enter username or ID" class="flex-grow bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
                             <button onclick="addFriend()" class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-4 py-2 rounded-xl text-xs transition">Add</button>
                         </div>
+
+                        <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Friend Requests</h4>
+                        <div id="friendRequestsList" class="space-y-2 mb-4"></div>
 
                         <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">My Connections</h4>
                         <div id="friendsList" class="space-y-2"></div>
@@ -744,38 +752,37 @@
             onAuthStateChanged
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import {
-    getFirestore,
-    doc,
-    getDoc,
-    setDoc,
-    onSnapshot,
-    collection,
-    query,
-    orderBy,
-    limit,
-    getDocs
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-       const appId =
-    typeof __app_id !== 'undefined'
-        ? __app_id
-        : 'discipline-e02ef';
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            onSnapshot,
+            collection,
+            query,
+            orderBy,
+            limit,
+            getDocs,
+            where,
+            deleteDoc
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-const fallbackConfig = {
-    apiKey: "AIzaSyDkTy9LR3yr7MfLfhF41h5wLizeK8dNiUQ",
-    authDomain: "discipline-e02ef.firebaseapp.com",
-    projectId: "discipline-e02ef",
-    storageBucket: "discipline-e02ef.firebasestorage.app",
-    messagingSenderId: "713022767658",
-    appId: "1:713022767658:web:da7fa234195b3e53ccf953"
-};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'discipline-e02ef';
+        const fallbackConfig = {
+            apiKey: "AIzaSyDkTy9LR3yr7MfLfhF41h5wLizeK8dNiUQ",
+            authDomain: "discipline-e02ef.firebaseapp.com",
+            projectId: "discipline-e02ef",
+            storageBucket: "discipline-e02ef.firebasestorage.app",
+            messagingSenderId: "713022767658",
+            appId: "1:713022767658:web:da7fa234195b3e53ccf953"
+        };
 
-let firebaseReady = false;
-let auth = null;
-let db = null;
-let stopUserSnapshot = null;
-let activeSyncUid = null;
-let firebaseHydrated = false;
-let pendingAuthProfileName = '';
+        let firebaseReady = false;
+        let auth = null;
+        let db = null;
+        let stopUserSnapshot = null;
+        let activeSyncUid = null;
+        let firebaseHydrated = false;
+        let pendingAuthProfileName = '';
 
         function getFirebaseConfig() {
             try {
@@ -813,22 +820,24 @@ let pendingAuthProfileName = '';
                 window.appId = appId;
                 window.firebaseReady = true;
                 window.firebaseFuncs = {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    signInWithPopup,
-    GoogleAuthProvider,
-    signInWithCustomToken,
-    getDoc,
-    doc,
-    setDoc,
-    onSnapshot,
-    collection,
-    query,
-    orderBy,
-    limit,
-    getDocs
-};
+                    createUserWithEmailAndPassword,
+                    signInWithEmailAndPassword,
+                    signOut,
+                    signInWithPopup,
+                    GoogleAuthProvider,
+                    signInWithCustomToken,
+                    getDoc,
+                    doc,
+                    setDoc,
+                    onSnapshot,
+                    collection,
+                    query,
+                    orderBy,
+                    limit,
+                    getDocs,
+                    where,
+                    deleteDoc
+                };
             } else {
                 console.info('Firebase is not configured. Running in local mode.');
                 window.firebaseReady = false;
@@ -849,7 +858,6 @@ let pendingAuthProfileName = '';
                 if (snap.exists() && snap.data()?.state) {
                     state = normalizeState(snap.data().state);
                 } else {
-                    // First login: keep only this account's clean/default state.
                     state = createDefaultState();
                     await setDoc(userDocRef, { state }, { merge: true });
                 }
@@ -859,27 +867,37 @@ let pendingAuthProfileName = '';
                     state.profile.name = pendingAuthProfileName;
                     pendingAuthProfileName = '';
                 }
+
                 saveStateToStorage({ sync: false });
                 firebaseHydrated = true;
+                activeSyncUid = uid;
                 renderAll();
 
                 if (stopUserSnapshot) stopUserSnapshot();
-                stopUserSnapshot = onSnapshot(userDocRef, (docSnap) => {
-                    const remoteState = docSnap.exists() ? docSnap.data()?.state : null;
-                    if (!remoteState) return;
+                stopUserSnapshot = onSnapshot(
+                    userDocRef,
+                    (docSnap) => {
+                        const remoteState = docSnap.exists() ? docSnap.data()?.state : null;
+                        if (!remoteState) return;
 
-                    state = normalizeState(remoteState);
-                    state.profile.email = auth.currentUser?.email || state.profile.email || '';
-                    saveStateToStorage({ sync: false });
-                    renderAll();
-                }, (error) => {
-                    console.error('Firestore sync error:', error);
-                });
+                        state = normalizeState(remoteState);
+                        state.profile.email = auth.currentUser?.email || state.profile.email || '';
+                        saveStateToStorage({ sync: false });
+                        renderAll();
+                    },
+                    (error) => console.error('Firestore sync error:', error)
+                );
 
-                activeSyncUid = uid;
+                if (typeof window.syncPublicProfileToFirestore === 'function') {
+                    await window.syncPublicProfileToFirestore();
+                }
+                if (typeof window.loadCommunityData === 'function') {
+                    await window.loadCommunityData(true);
+                }
             } catch (error) {
                 console.error('Failed to load user state:', error);
                 firebaseHydrated = false;
+                activeSyncUid = null;
             }
         }
 
@@ -909,23 +927,34 @@ let pendingAuthProfileName = '';
                     await hydrateUserState(user.uid);
                 } else {
                     updateAuthUI(false, true);
+                    if (typeof window.resetCommunityData === 'function') {
+                        window.resetCommunityData();
+                    }
                     renderAll();
                 }
             });
         }
 
-window.syncPublicProfileToFirestore = async function () {
-    if (!window.firebaseReady || !window.firebaseDb || !window.currentUser) return;
-
-    const streakData = calculateStreaks();
+        window.syncStateToFirestore = async function () {
+            if (!firebaseReady || !db || !window.currentUser || window.currentUser.isAnonymous) return;
+            if (!firebaseHydrated || activeSyncUid !== window.currentUser.uid) return;
 
             try {
-                const userDocRef = doc(db, 'artifacts', appId, 'users', window.currentUser.uid, 'profile', 'data');
-               await setDoc(userDocRef, { state }, { merge: true });
+                const userDocRef = doc(
+                    db,
+                    'artifacts',
+                    appId,
+                    'users',
+                    window.currentUser.uid,
+                    'profile',
+                    'data'
+                );
 
-if (window.syncPublicProfileToFirestore) {
-    await window.syncPublicProfileToFirestore();
-}
+                await setDoc(userDocRef, { state }, { merge: true });
+
+                if (typeof window.syncPublicProfileToFirestore === 'function') {
+                    await window.syncPublicProfileToFirestore();
+                }
             } catch (error) {
                 console.error('Error saving state to Firestore:', error);
             }
@@ -1033,9 +1062,28 @@ if (window.syncPublicProfileToFirestore) {
         let currentAuthMode = 'login';
         let disciplineChart = null;
 
+        const communityData = {
+            leaderboard: [],
+            friendRequests: [],
+            outgoingRequests: [],
+            friends: [],
+            challenges: [],
+            groups: []
+        };
+
+        let communityLoaded = false;
+        let communityLoading = false;
+
         window.addEventListener('DOMContentLoaded', () => {
             loadStateFromStorage();
             renderAll();
+
+            setTimeout(async () => {
+                if (window.currentUser) {
+                    await window.syncPublicProfileToFirestore?.();
+                    await loadCommunityData(true);
+                }
+            }, 0);
         });
 
         function loadStateFromStorage() {
@@ -1097,42 +1145,70 @@ if (window.syncPublicProfileToFirestore) {
                 state.rules.length > 0 &&
                 entry.rulesCompleted.length >= state.rules.length;
         }
-             window.syncPublicProfileToFirestore = async function () {
-    if (!window.firebaseReady || !window.firebaseDb || !window.currentUser) return;
-    if (!firebaseHydrated || activeSyncUid !== window.currentUser.uid) return;
+        window.syncPublicProfileToFirestore = async function () {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
 
-    const streakData = calculateStreaks();
+            if (!window.firebaseReady || !f || !dbRef || !user || user.isAnonymous) return;
 
-    const entries = Object.values(state.entries || {}).filter(entry =>
-        entry &&
-        (
-            entry.isRecovery ||
-            entry.submitted ||
-            (Array.isArray(entry.rulesCompleted) && entry.rulesCompleted.length > 0)
-        )
-    );
+            try {
+                const streakData = calculateStreaks();
+                const trackedEntries = Object.values(state.entries || {}).filter(entry =>
+                    entry &&
+                    (
+                        entry.isRecovery ||
+                        entry.submitted ||
+                        (Array.isArray(entry.rulesCompleted) && entry.rulesCompleted.length > 0)
+                    )
+                );
 
-    const completedDays = entries.filter(entry => isSuccessfulDay(entry)).length;
+                const completionRate = trackedEntries.length
+                    ? Math.round(
+                        trackedEntries.reduce(
+                            (sum, entry) => sum + getCalendarDayProgress(entry),
+                            0
+                        ) / trackedEntries.length
+                    )
+                    : 0;
 
-    const completionRate = entries.length
-        ? Math.round((completedDays / entries.length) * 100)
-        : 0;
+                const displayName = String(
+                    state.profile.name ||
+                    user.displayName ||
+                    user.email?.split('@')[0] ||
+                    'Discipline Warrior'
+                ).trim().slice(0, 80);
 
-    const profileRef = window.firebaseFuncs.doc(
-        window.firebaseDb,
-        'publicProfiles',
-        window.currentUser.uid
-    );
+                const profileRef = f.doc(dbRef, 'publicProfiles', user.uid);
 
-    await window.firebaseFuncs.setDoc(profileRef, {
-        name: state.profile.name || 'Discipline Warrior',
-        avatarSeed: state.profile.avatarSeed || 'Warrior',
-        currentStreak: streakData.current || 0,
-        bestStreak: streakData.best || 0,
-        completionRate: completionRate,
-        updatedAt: Date.now()
-    }, { merge: true });
-};
+                await f.setDoc(profileRef, {
+                    uid: user.uid,
+                    name: displayName,
+                    nameLower: displayName.toLowerCase(),
+                    avatarSeed: String(state.profile.avatarSeed || 'Warrior').slice(0, 80),
+                    currentStreak: Number(streakData.current || 0),
+                    bestStreak: Number(streakData.best || 0),
+                    completionRate,
+                    updatedAt: Date.now()
+                }, { merge: true });
+
+                if (window.communityData) {
+                    const mine = window.communityData.leaderboard?.find(item => item.uid === user.uid);
+                    if (mine) {
+                        Object.assign(mine, {
+                            name: displayName,
+                            avatarSeed: state.profile.avatarSeed || 'Warrior',
+                            currentStreak: Number(streakData.current || 0),
+                            bestStreak: Number(streakData.best || 0),
+                            completionRate
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Public profile sync error:', error);
+            }
+        };
+
 
         function isAnyProgressDay(entry) {
             return Boolean(entry && Array.isArray(entry.rulesCompleted) && entry.rulesCompleted.length > 0);
@@ -1179,6 +1255,10 @@ if (window.syncPublicProfileToFirestore) {
 
             if (tabId === 'analytics') {
                 setTimeout(() => renderDisciplineGraph(), 50);
+            }
+
+            if (tabId === 'community') {
+                loadCommunityData();
             }
         }
 
@@ -1698,85 +1778,500 @@ if (window.syncPublicProfileToFirestore) {
             ['leaderboard', 'friends', 'groups', 'share'].forEach(s => {
                 const el = document.getElementById(`comm-${s}`);
                 if (el) el.classList.add('hidden');
-                
+
                 const btn = document.getElementById(`subnav-${s}`);
-                if (btn) btn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-gray-400 hover:text-white border border-slate-800 whitespace-nowrap';
+                if (btn) {
+                    btn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-gray-400 hover:text-white border border-slate-800 whitespace-nowrap';
+                }
             });
 
-            document.getElementById(`comm-${sub}`).classList.remove('hidden');
-            document.getElementById(`subnav-${sub}`).className = 'px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap';
-        }
-
-        function renderCommunity() {
-            const lb = document.getElementById('leaderboardList');
-            if (lb) {
-                const mockList = [
-                    { name: 'David G.', streak: 120, pct: '99%' },
-                    { name: 'Sarah K.', streak: 45, pct: '98%' },
-                    { name: 'Alex M.', streak: 18, pct: '92%' }
-                ];
-                lb.innerHTML = mockList.map((item, index) => `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-bold text-gray-500">#${index + 1}</span>
-                            <span class="text-sm font-semibold text-white">${item.name}</span>
-                        </div>
-                        <div class="flex gap-4 text-xs">
-                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-fire mr-1"></i>${item.streak} days</span>
-                            <span class="text-cyan-400 font-bold">${item.pct}</span>
-                        </div>
-                    </div>
-                `).join('');
+            const target = document.getElementById(`comm-${sub}`);
+            const button = document.getElementById(`subnav-${sub}`);
+            if (target) target.classList.remove('hidden');
+            if (button) {
+                button.className = 'px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap';
             }
 
+            if (sub !== 'share') {
+                loadCommunityData();
+            }
+        }
+
+        function resetCommunityData() {
+            communityData.leaderboard = [];
+            communityData.friendRequests = [];
+            communityData.outgoingRequests = [];
+            communityData.friends = [];
+            communityData.challenges = [];
+            communityData.groups = [];
+            communityLoaded = false;
+            renderCommunity();
+        }
+        window.resetCommunityData = resetCommunityData;
+        window.communityData = communityData;
+
+        async function fetchPublicProfile(uid) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            if (!f || !dbRef || !uid) return null;
+
+            try {
+                const snap = await f.getDoc(f.doc(dbRef, 'publicProfiles', uid));
+                return snap.exists() ? { uid, ...snap.data() } : null;
+            } catch (error) {
+                console.error('Public profile read error:', error);
+                return null;
+            }
+        }
+
+        async function loadCommunityData(force = false) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+
+            if (!window.firebaseReady || !f || !dbRef || !user || user.isAnonymous) {
+                resetCommunityData();
+                return;
+            }
+
+            if (communityLoading) return;
+            if (communityLoaded && !force) {
+                renderCommunity();
+                return;
+            }
+
+            communityLoading = true;
+
+            try {
+                const publicProfilesRef = f.collection(dbRef, 'publicProfiles');
+                let leaderboardSnap;
+
+                try {
+                    leaderboardSnap = await f.getDocs(
+                        f.query(
+                            publicProfilesRef,
+                            f.orderBy('currentStreak', 'desc'),
+                            f.limit(50)
+                        )
+                    );
+                } catch (queryError) {
+                    console.warn('Leaderboard ordered query failed; using fallback:', queryError);
+                    leaderboardSnap = await f.getDocs(f.query(publicProfilesRef, f.limit(50)));
+                }
+
+                communityData.leaderboard = leaderboardSnap.docs
+                    .map(docSnap => ({ uid: docSnap.id, ...docSnap.data() }))
+                    .sort((a, b) =>
+                        Number(b.currentStreak || 0) - Number(a.currentStreak || 0) ||
+                        Number(b.completionRate || 0) - Number(a.completionRate || 0) ||
+                        Number(b.bestStreak || 0) - Number(a.bestStreak || 0)
+                    );
+
+                // Friend requests involving the current user.
+                const requestsSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'friendRequests'),
+                        f.where('toUid', '==', user.uid)
+                    )
+                );
+                const outgoingSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'friendRequests'),
+                        f.where('fromUid', '==', user.uid)
+                    )
+                );
+
+                communityData.friendRequests = requestsSnap.docs
+                    .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+                    .filter(request => request.status === 'pending');
+
+                communityData.outgoingRequests = outgoingSnap.docs
+                    .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+                    .filter(request => request.status === 'pending');
+
+                // Accepted friendships.
+                const friendshipsSnap = await f.getDocs(
+                    f.query(
+                        f.collection(dbRef, 'friendships'),
+                        f.where('members', 'array-contains', user.uid)
+                    )
+                );
+
+                const friendUids = friendshipsSnap.docs
+                    .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+                    .flatMap(friendship =>
+                        Array.isArray(friendship.members)
+                            ? friendship.members.filter(uid => uid !== user.uid)
+                            : []
+                    );
+
+                const friendProfiles = await Promise.all(
+                    [...new Set(friendUids)].map(uid => fetchPublicProfile(uid))
+                );
+
+                communityData.friends = friendProfiles.filter(Boolean);
+
+                // Community challenges.
+                let challengeSnap;
+                try {
+                    challengeSnap = await f.getDocs(
+                        f.query(
+                            f.collection(dbRef, 'communityChallenges'),
+                            f.orderBy('createdAt', 'desc'),
+                            f.limit(50)
+                        )
+                    );
+                } catch (queryError) {
+                    console.warn('Challenge ordered query failed; using fallback:', queryError);
+                    challengeSnap = await f.getDocs(
+                        f.query(f.collection(dbRef, 'communityChallenges'), f.limit(50))
+                    );
+                }
+
+                communityData.challenges = await Promise.all(
+                    challengeSnap.docs.map(async docSnap => {
+                        const data = docSnap.data();
+                        const participantsSnap = await f.getDocs(
+                            f.collection(dbRef, 'communityChallenges', docSnap.id, 'participants')
+                        );
+
+                        return {
+                            id: docSnap.id,
+                            ...data,
+                            participantCount: participantsSnap.size,
+                            joined: participantsSnap.docs.some(participant => participant.id === user.uid)
+                        };
+                    })
+                );
+
+                // Community squads/groups.
+                let groupSnap;
+                try {
+                    groupSnap = await f.getDocs(
+                        f.query(
+                            f.collection(dbRef, 'communityGroups'),
+                            f.orderBy('createdAt', 'desc'),
+                            f.limit(50)
+                        )
+                    );
+                } catch (queryError) {
+                    console.warn('Group ordered query failed; using fallback:', queryError);
+                    groupSnap = await f.getDocs(
+                        f.query(f.collection(dbRef, 'communityGroups'), f.limit(50))
+                    );
+                }
+
+                communityData.groups = await Promise.all(
+                    groupSnap.docs.map(async docSnap => {
+                        const data = docSnap.data();
+                        const membersSnap = await f.getDocs(
+                            f.collection(dbRef, 'communityGroups', docSnap.id, 'members')
+                        );
+
+                        return {
+                            id: docSnap.id,
+                            ...data,
+                            memberCount: membersSnap.size,
+                            joined: membersSnap.docs.some(member => member.id === user.uid)
+                        };
+                    })
+                );
+
+                communityLoaded = true;
+                renderCommunity();
+            } catch (error) {
+                console.error('Community data load failed:', error);
+                showNotification('Could not load community data.');
+            } finally {
+                communityLoading = false;
+            }
+        }
+        window.loadCommunityData = loadCommunityData;
+
+        function renderCommunity() {
+            renderLeaderboard();
             renderFriends();
             renderChallenges();
             renderSquads();
         }
 
-        function renderFriends() {
-            const list = document.getElementById('friendsList');
-            if (!list) return;
-            list.innerHTML = state.friends.map(f => `
-                <div class="flex justify-between items-center p-2 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-                    <span class="text-gray-200 font-medium">${escapeHTML(f.name)}</span>
-                    <span class="text-amber-400 font-bold"><i class="fa-solid fa-fire"></i> ${f.streak}d (${f.rate})</span>
-                </div>
-            `).join('');
+        function renderLeaderboard() {
+            const lb = document.getElementById('leaderboardList');
+            if (!lb) return;
+
+            if (!window.currentUser) {
+                lb.innerHTML = `
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center text-xs text-gray-400">
+                        Sign in to view the live global leaderboard.
+                    </div>
+                `;
+                return;
+            }
+
+            if (!communityData.leaderboard.length) {
+                lb.innerHTML = `
+                    <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center text-xs text-gray-400">
+                        No public profiles yet. Complete a rule and your profile will appear here.
+                    </div>
+                `;
+                return;
+            }
+
+            lb.innerHTML = communityData.leaderboard.map((item, index) => {
+                const name = escapeHTML(item.name || 'Discipline Warrior');
+                const avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(item.avatarSeed || item.uid || 'Warrior')}`;
+                const streak = Number(item.currentStreak || 0);
+                const pct = Number(item.completionRate || 0);
+                const isMe = item.uid === window.currentUser?.uid;
+
+                return `
+                    <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-900/60 border ${isMe ? 'border-cyan-500/40' : 'border-slate-800'}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <span class="w-6 text-center text-xs font-bold text-gray-500">#${index + 1}</span>
+                            <img src="${avatar}" alt="" class="w-8 h-8 rounded-lg bg-slate-800 border border-cyan-400/30">
+                            <div class="min-w-0">
+                                <div class="text-sm font-semibold text-white truncate">${name}${isMe ? ' <span class="text-[9px] text-cyan-400">(You)</span>' : ''}</div>
+                                <div class="text-[10px] text-gray-500">Best streak: ${Number(item.bestStreak || 0)} days</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 text-xs flex-none">
+                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-fire mr-1"></i>${streak}d</span>
+                            <span class="text-cyan-400 font-bold">${pct}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function addFriend() {
+        function renderFriends() {
+            const list = document.getElementById('friendsList');
+            const requestsList = document.getElementById('friendRequestsList');
+
+            if (!list || !requestsList) return;
+
+            if (!window.currentUser) {
+                requestsList.innerHTML = `<div class="text-xs text-gray-500">Sign in to manage friends.</div>`;
+                list.innerHTML = '';
+                return;
+            }
+
+            requestsList.innerHTML = communityData.friendRequests.length
+                ? communityData.friendRequests.map(request => `
+                    <div class="flex items-center justify-between gap-3 p-2 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+                        <div class="min-w-0">
+                            <div class="text-gray-200 font-medium truncate">${escapeHTML(request.fromName || request.fromUid)}</div>
+                            <div class="text-[10px] text-gray-500">sent you a friend request</div>
+                        </div>
+                        <div class="flex gap-1.5 flex-none">
+                            <button onclick="acceptFriendRequest('${escapeHTML(request.id)}')" class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Accept</button>
+                            <button onclick="rejectFriendRequest('${escapeHTML(request.id)}')" class="px-2 py-1 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20">Decline</button>
+                        </div>
+                    </div>
+                `).join('')
+                : `<div class="text-xs text-gray-500">No pending requests.</div>`;
+
+            const outgoingText = communityData.outgoingRequests.length
+                ? `<div class="text-[10px] text-gray-500 mb-2">Pending requests: ${communityData.outgoingRequests.length}</div>`
+                : '';
+
+            list.innerHTML = outgoingText + (
+                communityData.friends.length
+                    ? communityData.friends.map(friend => `
+                        <div class="flex justify-between items-center gap-3 p-2 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(friend.avatarSeed || friend.uid)}" alt="" class="w-7 h-7 rounded-lg bg-slate-800">
+                                <span class="text-gray-200 font-medium truncate">${escapeHTML(friend.name || 'Warrior')}</span>
+                            </div>
+                            <span class="text-amber-400 font-bold flex-none"><i class="fa-solid fa-fire"></i> ${Number(friend.currentStreak || 0)}d</span>
+                        </div>
+                    `).join('')
+                    : `<div class="text-xs text-gray-500">No friends yet.</div>`
+            );
+        }
+
+        async function addFriend() {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
             const input = document.getElementById('friendNameInput');
-            if (!input.value.trim()) return;
-            state.friends.push({ id: 'f_' + Date.now(), name: input.value.trim(), streak: 0, rate: '100%' });
-            saveStateToStorage();
-            renderFriends();
-            input.value = '';
-            showNotification('Friend added successfully!');
+
+            if (!window.firebaseReady || !f || !dbRef || !user) {
+                showNotification('Please sign in first.');
+                return;
+            }
+
+            const searchValue = input?.value.trim() || '';
+            if (!searchValue) return;
+
+            try {
+                let targetProfile = await fetchPublicProfile(searchValue);
+
+                if (!targetProfile) {
+                    const snap = await f.getDocs(
+                        f.query(
+                            f.collection(dbRef, 'publicProfiles'),
+                            f.where('nameLower', '==', searchValue.toLowerCase()),
+                            f.limit(5)
+                        )
+                    );
+
+                    if (snap.empty) {
+                        showNotification('User not found. Try their exact display name or user ID.');
+                        return;
+                    }
+
+                    if (snap.size > 1) {
+                        showNotification('Multiple users found. Use the user ID instead.');
+                        return;
+                    }
+
+                    const targetDoc = snap.docs[0];
+                    targetProfile = { uid: targetDoc.id, ...targetDoc.data() };
+                }
+
+                if (targetProfile.uid === user.uid) {
+                    showNotification('You cannot add yourself.');
+                    return;
+                }
+
+                const friendshipId = [user.uid, targetProfile.uid].sort().join('__');
+                const friendshipRef = f.doc(dbRef, 'friendships', friendshipId);
+                const friendshipSnap = await f.getDoc(friendshipRef);
+
+                if (friendshipSnap.exists()) {
+                    showNotification('You are already friends.');
+                    return;
+                }
+
+                const requestId = `${user.uid}__${targetProfile.uid}`;
+                const requestRef = f.doc(dbRef, 'friendRequests', requestId);
+                const existingRequest = await f.getDoc(requestRef);
+
+                if (existingRequest.exists() && existingRequest.data()?.status === 'pending') {
+                    showNotification('Friend request already pending.');
+                    return;
+                }
+
+                await f.setDoc(requestRef, {
+                    fromUid: user.uid,
+                    fromName: state.profile.name || user.displayName || 'Discipline Warrior',
+                    toUid: targetProfile.uid,
+                    toName: targetProfile.name || 'Discipline Warrior',
+                    status: 'pending',
+                    createdAt: Date.now()
+                }, { merge: true });
+
+                input.value = '';
+                showNotification('Friend request sent!');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Add friend error:', error);
+                showNotification('Could not send friend request.');
+            }
+        }
+
+        async function acceptFriendRequest(requestId) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            if (!f || !dbRef || !user) return;
+
+            try {
+                const requestRef = f.doc(dbRef, 'friendRequests', requestId);
+                const requestSnap = await f.getDoc(requestRef);
+                if (!requestSnap.exists()) return;
+
+                const request = requestSnap.data();
+                if (request.toUid !== user.uid) return;
+
+                const friendshipId = [request.fromUid, request.toUid].sort().join('__');
+
+                await f.setDoc(
+                    f.doc(dbRef, 'friendships', friendshipId),
+                    {
+                        members: [request.fromUid, request.toUid],
+                        createdAt: Date.now()
+                    },
+                    { merge: true }
+                );
+
+                await f.setDoc(requestRef, { status: 'accepted', respondedAt: Date.now() }, { merge: true });
+                showNotification('Friend request accepted.');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Accept friend error:', error);
+                showNotification('Could not accept friend request.');
+            }
+        }
+
+        async function rejectFriendRequest(requestId) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            if (!f || !dbRef || !user) return;
+
+            try {
+                const requestRef = f.doc(dbRef, 'friendRequests', requestId);
+                const requestSnap = await f.getDoc(requestRef);
+                if (!requestSnap.exists()) return;
+
+                if (requestSnap.data()?.toUid !== user.uid) return;
+
+                await f.setDoc(requestRef, { status: 'rejected', respondedAt: Date.now() }, { merge: true });
+                showNotification('Friend request declined.');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Reject friend error:', error);
+                showNotification('Could not decline friend request.');
+            }
         }
 
         function renderChallenges() {
             const list = document.getElementById('challengesList');
             if (!list) return;
-            list.innerHTML = state.challenges.map(c => `
-                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-                    <div class="flex justify-between font-bold text-white mb-1">
-                        <span>${escapeHTML(c.title)}</span>
-                        <span class="text-cyan-400">${c.progress}/${c.duration} Days</span>
+
+            if (!window.currentUser) {
+                list.innerHTML = `<div class="text-xs text-gray-500">Sign in to join community challenges.</div>`;
+                return;
+            }
+
+            if (!communityData.challenges.length) {
+                list.innerHTML = `<div class="text-xs text-gray-500">No community challenges yet. Launch the first one.</div>`;
+                return;
+            }
+
+            list.innerHTML = communityData.challenges.map(challenge => {
+                const joined = Boolean(challenge.joined);
+                const creator = escapeHTML(challenge.creatorName || 'Warrior');
+                return `
+                    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+                        <div class="flex justify-between gap-3 font-bold text-white mb-1">
+                            <span class="truncate">${escapeHTML(challenge.title || 'Discipline Challenge')}</span>
+                            <span class="text-cyan-400 flex-none">${Number(challenge.duration || 0)} Days</span>
+                        </div>
+                        <div class="text-[10px] text-gray-500 mb-2">${Number(challenge.participantCount || 0)} participant(s) • by ${creator}</div>
+                        <button onclick="joinCommunityChallenge('${escapeHTML(challenge.id)}')" ${joined ? 'disabled' : ''} class="w-full py-1.5 rounded-lg text-[10px] font-bold border ${joined ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20 hover:bg-cyan-500/20'}">
+                            ${joined ? 'Joined' : 'Join Challenge'}
+                        </button>
                     </div>
-                    <div class="w-full bg-slate-800 rounded-full h-1.5">
-                        <div class="bg-cyan-400 h-1.5 rounded-full" style="width: ${Math.min(100, Math.max(0, (c.progress / c.duration) * 100))}%"></div>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        function openChallengeModal() { document.getElementById('challengeModal').classList.remove('hidden'); }
-        function closeChallengeModal() { document.getElementById('challengeModal').classList.add('hidden'); }
+        async function createChallenge() {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
 
-        function createChallenge() {
-            const title = document.getElementById('challengeTitleInput').value.trim().slice(0, 120);
-            const days = parseInt(document.getElementById('challengeDaysInput').value, 10);
+            const titleInput = document.getElementById('challengeTitleInput');
+            const daysInput = document.getElementById('challengeDaysInput');
+            const title = titleInput?.value.trim().slice(0, 120) || '';
+            const days = parseInt(daysInput?.value, 10);
+
+            if (!window.firebaseReady || !f || !dbRef || !user) {
+                showNotification('Please sign in first.');
+                return;
+            }
             if (!title) {
                 showNotification('Please enter a challenge title.');
                 return;
@@ -1785,37 +2280,167 @@ if (window.syncPublicProfileToFirestore) {
                 showNotification('Challenge duration must be between 1 and 365 days.');
                 return;
             }
-            state.challenges.push({ id: 'c_' + Date.now(), title, duration: days, progress: Math.min(1, days) });
-            saveStateToStorage();
-            renderChallenges();
-            closeChallengeModal();
-            showNotification('Challenge created!');
+
+            try {
+                const challengeRef = f.doc(f.collection(dbRef, 'communityChallenges'));
+                await f.setDoc(challengeRef, {
+                    title,
+                    duration: days,
+                    creatorUid: user.uid,
+                    creatorName: state.profile.name || user.displayName || 'Discipline Warrior',
+                    createdAt: Date.now()
+                });
+
+                await f.setDoc(
+                    f.doc(dbRef, 'communityChallenges', challengeRef.id, 'participants', user.uid),
+                    {
+                        uid: user.uid,
+                        name: state.profile.name || user.displayName || 'Discipline Warrior',
+                        joinedAt: Date.now()
+                    }
+                );
+
+                if (titleInput) titleInput.value = '';
+                if (daysInput) daysInput.value = '';
+                closeChallengeModal();
+                showNotification('Community challenge created!');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Create challenge error:', error);
+                showNotification('Could not create the challenge.');
+            }
+        }
+
+        async function joinCommunityChallenge(challengeId) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            if (!f || !dbRef || !user) return;
+
+            try {
+                await f.setDoc(
+                    f.doc(dbRef, 'communityChallenges', challengeId, 'participants', user.uid),
+                    {
+                        uid: user.uid,
+                        name: state.profile.name || user.displayName || 'Discipline Warrior',
+                        joinedAt: Date.now()
+                    },
+                    { merge: true }
+                );
+
+                showNotification('Joined challenge!');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Join challenge error:', error);
+                showNotification('Could not join the challenge.');
+            }
         }
 
         function renderSquads() {
             const list = document.getElementById('communityGroupsList');
             if (!list) return;
-            list.innerHTML = state.groups.map(g => `
-                <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-                    <h4 class="font-bold text-white text-sm">${escapeHTML(g.name)}</h4>
-                    <p class="text-gray-400 my-1">${escapeHTML(g.motto)}</p>
-                    <span class="text-cyan-400 font-bold">${g.members} Members</span>
-                </div>
-            `).join('');
+
+            if (!window.currentUser) {
+                list.innerHTML = `<div class="text-xs text-gray-500">Sign in to join or create squads.</div>`;
+                return;
+            }
+
+            if (!communityData.groups.length) {
+                list.innerHTML = `<div class="text-xs text-gray-500">No squads yet. Create the first one.</div>`;
+                return;
+            }
+
+            list.innerHTML = communityData.groups.map(group => {
+                const joined = Boolean(group.joined);
+                return `
+                    <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+                        <h4 class="font-bold text-white text-sm">${escapeHTML(group.name || 'Discipline Squad')}</h4>
+                        <p class="text-gray-400 my-1">${escapeHTML(group.motto || '')}</p>
+                        <div class="flex items-center justify-between gap-2 mt-3">
+                            <span class="text-cyan-400 font-bold">${Number(group.memberCount || 0)} Members</span>
+                            <button onclick="toggleCommunityGroupMembership('${escapeHTML(group.id)}', ${joined ? 'true' : 'false'})" class="px-3 py-1.5 rounded-lg text-[10px] font-bold border ${joined ? 'bg-slate-800 text-gray-300 border-slate-700' : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20 hover:bg-cyan-500/20'}">
+                                ${joined ? 'Leave' : 'Join'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function openGroupModal() { document.getElementById('groupModal').classList.remove('hidden'); }
-        function closeGroupModal() { document.getElementById('groupModal').classList.add('hidden'); }
+        async function createCommunityGroup() {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            const nameInput = document.getElementById('groupNameInput');
+            const mottoInput = document.getElementById('groupMottoInput');
+            const name = nameInput?.value.trim().slice(0, 80) || '';
+            const motto = mottoInput?.value.trim().slice(0, 160) || '';
 
-        function createCommunityGroup() {
-            const name = document.getElementById('groupNameInput').value.trim();
-            const motto = document.getElementById('groupMottoInput').value.trim();
-            if (!name) return;
-            state.groups.push({ id: 'g_' + Date.now(), name, motto, members: 1 });
-            saveStateToStorage();
-            renderSquads();
-            closeGroupModal();
-            showNotification('Squad created!');
+            if (!window.firebaseReady || !f || !dbRef || !user) {
+                showNotification('Please sign in first.');
+                return;
+            }
+            if (!name) {
+                showNotification('Please enter a squad name.');
+                return;
+            }
+
+            try {
+                const groupRef = f.doc(f.collection(dbRef, 'communityGroups'));
+                await f.setDoc(groupRef, {
+                    name,
+                    motto,
+                    ownerUid: user.uid,
+                    ownerName: state.profile.name || user.displayName || 'Discipline Warrior',
+                    createdAt: Date.now()
+                });
+
+                await f.setDoc(
+                    f.doc(dbRef, 'communityGroups', groupRef.id, 'members', user.uid),
+                    {
+                        uid: user.uid,
+                        name: state.profile.name || user.displayName || 'Discipline Warrior',
+                        joinedAt: Date.now()
+                    }
+                );
+
+                if (nameInput) nameInput.value = '';
+                if (mottoInput) mottoInput.value = '';
+                closeGroupModal();
+                showNotification('Community squad created!');
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Create group error:', error);
+                showNotification('Could not create the squad.');
+            }
+        }
+
+        async function toggleCommunityGroupMembership(groupId, currentlyJoined) {
+            const f = window.firebaseFuncs;
+            const dbRef = window.firebaseDb;
+            const user = window.currentUser;
+            if (!f || !dbRef || !user) return;
+
+            const memberRef = f.doc(dbRef, 'communityGroups', groupId, 'members', user.uid);
+
+            try {
+                if (currentlyJoined) {
+                    await f.deleteDoc(memberRef);
+                    showNotification('Left the squad.');
+                } else {
+                    await f.setDoc(memberRef, {
+                        uid: user.uid,
+                        name: state.profile.name || user.displayName || 'Discipline Warrior',
+                        joinedAt: Date.now()
+                    }, { merge: true });
+                    showNotification('Joined the squad!');
+                }
+
+                await loadCommunityData(true);
+            } catch (error) {
+                console.error('Group membership error:', error);
+                showNotification('Could not update squad membership.');
+            }
         }
 
         function updateShareCard() {
