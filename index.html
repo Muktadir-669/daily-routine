@@ -274,8 +274,8 @@
                         <div class="w-full h-3 bg-slate-900/90 rounded-full overflow-hidden border border-slate-800">
                             <div id="dailyProgressBar" class="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-emerald-400 rounded-full transition-all duration-300 shadow-[0_0_12px_rgba(0,242,254,0.4)]" style="width:0%"></div>
                         </div>
-                        <button onclick="submitDailyProtocol()" class="w-full mt-4 glow-btn py-3 px-4 text-black font-extrabold text-sm rounded-xl uppercase tracking-wider flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] transition">
-                            <i class="fa-solid fa-paper-plane text-base"></i> Submit Protocol
+                        <button id="submitProtocolBtn" onclick="submitDailyProtocol()" class="w-full mt-4 glow-btn py-3 px-4 text-black font-extrabold text-sm rounded-xl uppercase tracking-wider flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.99] transition">
+                            <i class="fa-solid fa-paper-plane text-base"></i> <span id="submitProtocolBtnText">Submit Protocol</span>
                         </button>
                     </div>
                 </div>
@@ -1448,9 +1448,30 @@
             document.getElementById('dailyProgressPercent').textContent = `${pct}%`;
             document.getElementById('dailyProgressBar').style.width = `${pct}%`;
             document.getElementById('dailyJournalText').value = todayEntry.journal || '';
+
+            const submitProtocolBtnText = document.getElementById('submitProtocolBtnText');
+            if (submitProtocolBtnText) {
+                const signedIn = !!(window.currentUser && !window.currentUser.isAnonymous);
+                submitProtocolBtnText.textContent = signedIn ? 'Submit Protocol' : 'Login to Submit';
+            }
+        }
+
+        // Daily protocol is account-specific: users must be signed in before
+        // they can mark rules or submit today's protocol.
+        function requireLoginForDailyProtocol() {
+            const user = window.currentUser;
+            if (user && !user.isAnonymous) return true;
+
+            showNotification('Please login first, then you can submit your daily rules.');
+            if (typeof openAuthModal === 'function') {
+                setTimeout(() => openAuthModal(), 150);
+            }
+            return false;
         }
 
         function toggleHabit(ruleId) {
+            if (!requireLoginForDailyProtocol()) return;
+
             const todayKey = getTodayKey();
             if (!state.entries[todayKey]) {
                 state.entries[todayKey] = { rulesCompleted: [], journal: '', isRecovery: false };
@@ -1471,6 +1492,8 @@
         }
 
         function submitDailyProtocol() {
+            if (!requireLoginForDailyProtocol()) return;
+
             const todayKey = getTodayKey();
             if (!state.entries[todayKey]) {
                 state.entries[todayKey] = { rulesCompleted: [], journal: '', isRecovery: false };
